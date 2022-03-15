@@ -1,0 +1,4 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "E:/VLSI/Lab1_1/Lab1_1.srcs/sources_1/new/decoder_behavioral.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'decoder_behavioral'
+INFO: [VRFC 10-163] Analyzing VHDL file "E:/VLSI/Lab1_1/Lab1_1.srcs/sim_1/new/decoder_behavioral_testbench.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'decoder_behavioral_testbench'
