@@ -45,7 +45,6 @@ component full_adder_structural is
     Port ( FA, FB, FCin : in STD_LOGIC;
            FS, FCout : out STD_LOGIC
           );
-        
 end component;
 
 signal C1, C2, C3 : STD_LOGIC;
