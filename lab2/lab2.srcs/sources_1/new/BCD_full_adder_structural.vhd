@@ -71,10 +71,6 @@ ADDER1: four_bit_parallel_adder_structural PORT MAP (P4A=>P4A_BCD, P4B=>P4B_BCD,
 AND_first: and_gate PORT MAP (X_and =>result_of_first_adder(3) , Y_and=>result_of_first_adder(2), Z_and=>and1);
 AND_second: and_gate PORT MAP (X_and =>result_of_first_adder(3) , Y_and=>result_of_first_adder(1), Z_and=>and2);
 OR_carry: or_gate_3_input PORT MAP (X =>and1, Y=>and2, Z=>carry_of_first_adder, or_output=>PCout_BCD);
-input_of_second_adder(3)<='0';
-input_of_second_adder(2)<=PCout_BCD;
-input_of_second_adder(1)<=PCout_BCD;
-input_of_second_adder(0)<='0';
-ADDER2: four_bit_parallel_adder_structural PORT MAP (P4A=>result_of_first_adder, P4B=>input_of_second_adder, PCin=>'0', P4S=>P4S_BCD, PCout=>dontcare_check_it_moiras);
+ADDER2: four_bit_parallel_adder_structural PORT MAP (P4A=>result_of_first_adder, P4B(3)=>'0', P4B(2)=>PCout_BCD, P4B(1)=>PCout_BCD, P4B(0)=>'0', PCin=>'0', P4S=>P4S_BCD, PCout=>dontcare_check_it_moiras);
 
 end Structural_BCD;
