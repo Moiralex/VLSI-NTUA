@@ -32,7 +32,7 @@ entity full_adder_structural is
 end full_adder_structural;
 
 architecture Structural of full_adder_structural is
-    component half_adder_behavioral is
+    component half_adder_dataflow is
         Port ( A, B : in STD_LOGIC;
                S, Cout : out STD_LOGIC
              );
@@ -47,8 +47,8 @@ architecture Structural of full_adder_structural is
     signal S0, C0, C1 : STD_LOGIC;
 begin
 
-U1: half_adder_behavioral PORT MAP (A=>FA, B=>FB, S=>S0, Cout=>C0);
-U2: half_adder_behavioral PORT MAP (A=>S0, B=>FCin, S=>FS, Cout=>C1);
+U1: half_adder_dataflow PORT MAP (A=>FA, B=>FB, S=>S0, Cout=>C0);
+U2: half_adder_dataflow PORT MAP (A=>S0, B=>FCin, S=>FS, Cout=>C1);
 U3: or_gate PORT MAP (X=>C0, Y=>C1, Z=>FCout);
 
 end Structural;
