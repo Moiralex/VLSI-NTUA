@@ -22,14 +22,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 entity four_bit_FA_pipeline is
     Port ( A : in STD_LOGIC_VECTOR (3 downto 0);
@@ -95,6 +87,6 @@ regA3_1: reg port map (D=>regA3(0), clk=>clk, rst=>rst, Q=>regA3(1));
 regB3_1: reg port map (D=>regB3(0), clk=>clk, rst=>rst, Q=>regB3(1));
 regA3_2: reg port map (D=>regA3(1), clk=>clk, rst=>rst, Q=>regA3(2));
 regB3_2: reg port map (D=>regB3(1), clk=>clk, rst=>rst, Q=>regB3(2));
-FA3: full_adder_behavioral port map (A=>regA3(2), B=>regB3(2), Cin=>C3, clk=>clk, rst=>rst, S=>S(4), Cout=>Cout);
+FA3: full_adder_behavioral port map (A=>regA3(2), B=>regB3(2), Cin=>C3, clk=>clk, rst=>rst, S=>S(3), Cout=>Cout);
 
 end Structural;
