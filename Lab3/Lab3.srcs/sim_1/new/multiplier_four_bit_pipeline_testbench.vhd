@@ -28,7 +28,7 @@ end multiplier_four_bit_pipeline_testbench;
 
 architecture testbench_multiplier of multiplier_four_bit_pipeline_testbench is
     
-    constant clk1_period: time := 3ns;
+    constant clk1_period: time := 270ps;
     signal clk_test, rst_test : std_logic := '0';
     signal A_test, B_test : std_logic_vector(3 downto 0) := "1111";
     signal Pout_test : std_logic_vector(7 downto 0);
@@ -59,7 +59,9 @@ begin
                     B_test<=B_test + 1;
                     wait for clk1_period;
                 end loop;
+                --wait for clk1_period;
             end loop;
+            wait for 10*clk1_period;
         end loop;
     end process;
     

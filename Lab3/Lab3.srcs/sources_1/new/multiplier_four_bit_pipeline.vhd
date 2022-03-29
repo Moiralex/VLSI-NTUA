@@ -70,13 +70,29 @@ signal regP3 : std_logic_vector(2 downto 0);
 signal regP4 : std_logic_vector(1 downto 0);
 signal regP5 : std_logic;
 
+signal a1_buf: std_logic;
+signal a2_buf: std_logic_vector(1 downto 0);
+signal a3_buf: std_logic_vector(2 downto 0);
+
 
 begin
 
 FIRST_ROW_FIRST: full_adder_for_multiplier port map(a_j=>A(0), b_i=>B(0), cin=>'0', sin=>'0', clk=>clk, rst=>rst, s_out=>regP0(0), c_out=>carry_first_row(0), D_horizontal=>horizontal_first_row(0), D_diagonal=>diagonal_first_row(0));
-FIRST_ROW_SECOND: full_adder_for_multiplier port map(a_j=>A(1), b_i=>horizontal_first_row(0), cin=>carry_first_row(0), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(1), c_out=>carry_first_row(1), D_horizontal=>horizontal_first_row(1), D_diagonal=>diagonal_first_row(1));
-FIRST_ROW_THIRD: full_adder_for_multiplier port map(a_j=>A(2), b_i=>horizontal_first_row(1), cin=>carry_first_row(1), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(2), c_out=>carry_first_row(2), D_horizontal=>horizontal_first_row(2), D_diagonal=>diagonal_first_row(2));
-FIRST_ROW_FOURTH: full_adder_for_multiplier port map(a_j=>A(3), b_i=>horizontal_first_row(2), cin=>carry_first_row(2), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(3), c_out=>carry_first_row(3), D_horizontal=>horizontal_first_row(3), D_diagonal=>diagonal_first_row(3));
+
+regA1_0: reg port map (D=>A(1), clk=>clk, rst=>rst, Q=>a1_buf);
+
+FIRST_ROW_SECOND: full_adder_for_multiplier port map(a_j=>a1_buf, b_i=>horizontal_first_row(0), cin=>carry_first_row(0), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(1), c_out=>carry_first_row(1), D_horizontal=>horizontal_first_row(1), D_diagonal=>diagonal_first_row(1));
+
+regA2_0: reg port map (D=>A(2), clk=>clk, rst=>rst, Q=>a2_buf(0));
+regA2_1: reg port map (D=>a2_buf(0), clk=>clk, rst=>rst, Q=>a2_buf(1));
+
+FIRST_ROW_THIRD: full_adder_for_multiplier port map(a_j=>a2_buf(1), b_i=>horizontal_first_row(1), cin=>carry_first_row(1), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(2), c_out=>carry_first_row(2), D_horizontal=>horizontal_first_row(2), D_diagonal=>diagonal_first_row(2));
+
+regA3_0: reg port map (D=>A(3), clk=>clk, rst=>rst, Q=>a3_buf(0));
+regA3_1: reg port map (D=>a3_buf(0), clk=>clk, rst=>rst, Q=>a3_buf(1));
+regA3_2: reg port map (D=>a3_buf(1), clk=>clk, rst=>rst, Q=>a3_buf(2));
+
+FIRST_ROW_FOURTH: full_adder_for_multiplier port map(a_j=>a3_buf(2), b_i=>horizontal_first_row(2), cin=>carry_first_row(2), sin=>'0', clk=>clk, rst=>rst, s_out=>result_first_row(3), c_out=>carry_first_row(3), D_horizontal=>horizontal_first_row(3), D_diagonal=>diagonal_first_row(3));
 
 regCoutFirstRow: reg port map (D=>carry_first_row(3), clk=>clk, rst=>rst, Q=>carry_buf_first_row);
 
