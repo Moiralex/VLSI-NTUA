@@ -67,8 +67,8 @@ AND1: and_gate port map(X_and=>a_j, Y_and=>b_i, Z_and=>result_and);
 REG_HORIZONTAL: reg port map (D=>b_i, clk=>clk, rst=>rst, Q=>D_horizontal);
 REG_DIAGONAL_1: reg port map (D=>a_j, clk=>clk, rst=>rst, Q=>reg_temp);
 REG_DIAGONAL_2: reg port map (D=>reg_temp, clk=>clk, rst=>rst, Q=>D_diagonal);
-fll_adder: full_adder_behavioral port map (A=>result_and, B=>sin, Cin=>cin, clk=>clk, rst=>rst, S=>reg_result, Cout=>reg_carry);
-carry_reg:  reg port map (D=>reg_carry, clk=>clk, rst=>rst, Q=>c_out);
-sum_result_reg: reg port map (D=>reg_result, clk=>clk, rst=>rst, Q=>s_out);
+fll_adder: full_adder_behavioral port map (A=>result_and, B=>sin, Cin=>cin, clk=>clk, rst=>rst, S=>s_out, Cout=>c_out);
+--carry_reg:  reg port map (D=>reg_carry, clk=>clk, rst=>rst, Q=>c_out);
+--sum_result_reg: reg port map (D=>reg_result, clk=>clk, rst=>rst, Q=>s_out);
 
 end structural;

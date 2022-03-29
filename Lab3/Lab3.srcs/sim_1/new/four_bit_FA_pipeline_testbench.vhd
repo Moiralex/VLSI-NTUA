@@ -28,7 +28,7 @@ end four_bit_FA_pipeline_testbench;
 
 architecture test_four_bit_full_adder of four_bit_FA_pipeline_testbench is
 
-    constant clk1_period: time := 270ps;
+    constant clk1_period: time := 27ns;
     signal clk_test, rst_test :std_logic := '0';
     signal Cin_test :std_logic := '0';
     signal A_test, B_test :std_logic_vector(3 downto 0):= "1111";
@@ -69,7 +69,6 @@ begin
                 end loop;
             end loop;
         end loop;
-        wait;
     end process;
     
     clk1_generator: process begin
