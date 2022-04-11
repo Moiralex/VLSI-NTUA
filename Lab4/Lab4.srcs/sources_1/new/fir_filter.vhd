@@ -28,7 +28,7 @@ use ieee.std_logic_unsigned.all;
 --use IEEE.NUMERIC_STD.ALL;
 
 entity fir_filter is
-  Port ( clk_fir : in std_logic;
+  Port ( clk : in std_logic;
          rst : in std_logic;
          valid_in : in std_logic;
          x : in std_logic_vector(7 downto 0);
@@ -67,34 +67,43 @@ architecture Behavioral of fir_filter is
             ram_output : in std_logic_vector (7 downto 0);
             mac_init : in std_logic;
             clk : in STD_LOGIC;
+            rst : in STD_LOGIC;
             mac_output : out std_logic_vector (19 downto 0)); 
     end component;
     
-    signal eight_values_available : std_logic;
-    signal counter : std_logic_vector(2 downto 0) := "000";
+    component control_unit is
+    Port ( clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           valid_in : in STD_LOGIC;
+           rom_address : out STD_LOGIC_VECTOR (2 downto 0);
+           ram_address : out STD_LOGIC_VECTOR (2 downto 0);
+           we: out STD_LOGIC := '0';
+           mac_init : out STD_LOGIC;
+           valid_out : out STD_LOGIC);
+    end component;
+    
+    component reg is
+    Port ( D : in STD_LOGIC;
+           clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           Q : out STD_LOGIC);
+    end component;
+    
+
     
     signal we_ram, en_ram, en_rom, mac_initialization : std_logic;
     signal addr_ram, addr_rom : std_logic_vector(2 downto 0);
     signal di_ram, output_of_ram, output_of_rom : std_logic_vector(7 downto 0);
-    signal output_of_mac : std_logic_vector (19 downto 0);
-begin
-en_ram <= '1';
-en_rom <= '1';
-
-ram: mlab_ram port map(clk=>clk_fir, we=>we_ram, en=>en_ram, rst=>rst, addr=>addr_ram, di=>di_ram, do=>output_of_ram);
-rom: mlab_rom port map(clk=>clk_fir, en=>en_rom, addr=>addr_rom, rom_out=>output_of_rom);
-mac_label: mac port map(rom_output=>output_of_rom, ram_output=>output_of_ram, mac_init=>mac_initialization, clk=>clk_fir, mac_output=>output_of_mac);
-
- process(clk_fir, rst)
+    signal mac_init_buf, valid_out_buf :std_logic;
     begin
-        if rst='1' then
-        ---na tsekarw miso xreiazetai kapoia kathisterisi
-            counter <= "000";
-            valid_out <= '0';
-            mac_initialization <= '0';
-        end if;
-        --elsif rising_edge(clk) then
-            
-        --end if;
-    end process;
+    en_ram <= '1';
+    en_rom <= '1';
+    
+    control: control_unit port map(clk=>clk, rst=>rst, valid_in=>valid_in, rom_address=>addr_rom, ram_address=>addr_ram, we=>we_ram, mac_init=>mac_init_buf, valid_out=>valid_out_buf);
+    mac_init_reg : reg port map(D=>mac_init_buf, clk=>clk, rst=>rst, Q=>mac_initialization);
+    valid_out_reg : reg port map(D=>valid_out_buf, clk=>clk, rst=>rst, Q=>valid_out);
+    ram: mlab_ram port map(clk=>clk, we=>we_ram, en=>en_ram, rst=>rst, addr=>addr_ram, di=>x, do=>output_of_ram);
+    rom: mlab_rom port map(clk=>clk, en=>en_rom, addr=>addr_rom, rom_out=>output_of_rom);
+    mac_label: mac port map(rom_output=>output_of_rom, ram_output=>output_of_ram, mac_init=>mac_initialization, clk=>clk, rst=>rst, mac_output=>fir_output);
+
 end Behavioral;

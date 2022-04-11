@@ -52,12 +52,10 @@ begin
 
     process(clk, rst)
     begin
-        if rst='1' then
+        if rst='0' then
             addr_count <= (others => '1');
             valid_out<='0';
-            mac_init<='1';
-            
-            
+            mac_init<='1';        
             
         elsif clk'event and clk='1' then
             if pause='1' then

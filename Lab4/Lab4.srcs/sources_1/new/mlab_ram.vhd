@@ -28,7 +28,7 @@ begin
 
     process (clk, rst)
     begin
-        if rst='1' then
+        if rst='0' then
             for i in 0 to 7 loop
                 RAM(i) <= (others => '0');
             end loop;

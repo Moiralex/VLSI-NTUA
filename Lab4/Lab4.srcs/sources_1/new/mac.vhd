@@ -29,7 +29,7 @@ entity mac is
             ram_output : in std_logic_vector (7 downto 0);
             mac_init : in std_logic;
             clk : in STD_LOGIC;
-            --rst : in STD_LOGIC;
+            rst : in STD_LOGIC;
             mac_output : out std_logic_vector (19 downto 0)); --255 X 255 X 8 = 520200 = 1111111000000001000 => 19 bits
 end mac;
 
@@ -37,9 +37,12 @@ architecture Behavioral of mac is
     
     signal intermediate: std_logic_vector (19 downto 0);
 begin
-    process(clk)
+    process(clk, rst)
     begin
-        if rising_edge(clk) then
+        if rst='0' then
+            mac_output <= (others => '0');
+            intermediate <= (others => '0');
+        elsif rising_edge(clk) then
             if mac_init='1' then
                 mac_output <= (others => '0');
                 intermediate <= (others => '0');
