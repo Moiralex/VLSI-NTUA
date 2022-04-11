@@ -58,7 +58,7 @@ begin
             mac_init<='1';        
             
         elsif clk'event and clk='1' then
-            if pause='1' then
+            if pause='1' then --if the system is paused check if valid input has arrived to unpause it
                 if valid_in='1' then
                     we<='1';
                     mac_init<='1';
@@ -66,15 +66,15 @@ begin
                 end if;
             else
                 addr_count <= addr_count + 1;
-                if addr_count=0 then
+                if addr_count=0 then --calculation data scanned output will be valid the next cycle
                     valid_out<='1';
-                    if valid_in='1' then
+                    if valid_in='1' then --if new valid data has arrived start new calculation else pause the system
                         we<='1';
                         mac_init<='1';
                     else
                         pause<='1';
                     end if;
-                else
+                else --we are in the middle of a calculation, not expecting new data
                     valid_out<='0';
                     we<='0';
                     mac_init<='0';
