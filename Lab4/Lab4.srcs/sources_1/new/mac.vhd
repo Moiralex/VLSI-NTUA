@@ -21,7 +21,6 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use ieee.numeric_std.all;
 use IEEE.std_logic_unsigned.all;
 
 entity mac is
@@ -35,7 +34,7 @@ end mac;
 
 architecture Behavioral of mac is
     
-    signal intermediate: std_logic_vector (19 downto 0);
+    signal intermediate: std_logic_vector (19 downto 0):= (others => '0'); --initialized this
 begin
     process(clk, rst)
     begin
@@ -48,6 +47,8 @@ begin
                 intermediate <= (others => '0');
             end if;
             intermediate <= intermediate + rom_output*ram_output;
+            --intermediate <= (others => '1');
+            --intermediate <= intermediate + 1;
             mac_output <= intermediate;
         end if;
     end process;

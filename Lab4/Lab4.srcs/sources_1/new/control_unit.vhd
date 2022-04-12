@@ -45,8 +45,8 @@ end control_unit;
 
 architecture Behavioral of control_unit is
 
-signal addr_count: std_logic_vector(2 downto 0) := (others => '1');
-signal pause: std_logic;
+signal addr_count: std_logic_vector(2 downto 0) := (others => '0'); --changed this from '1' to '0'
+signal pause: std_logic := '0';     --initialized pause
 
 begin
 
