@@ -35,7 +35,7 @@ end mac;
 
 architecture Behavioral of mac is
     
-    signal intermediate: std_logic_vector (19 downto 0);
+    signal intermediate: std_logic_vector (19 downto 0) := (others => '0');
 begin
     process(clk, rst)
     variable tmp1, tmp2: std_logic_vector (19 downto 0);
@@ -54,7 +54,7 @@ begin
             end if;
             tmp2 := tmp1 + rom_output*ram_output;
             intermediate <= tmp2;
-            mac_output <= intermediate;
+            mac_output <= tmp2;
         end if;
     end process;
 end Behavioral;
