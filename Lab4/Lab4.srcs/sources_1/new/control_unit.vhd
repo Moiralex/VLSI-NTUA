@@ -60,6 +60,7 @@ begin
             
         elsif clk'event and clk='1' then
             if pause='1' then --if the system is paused check if valid input has arrived to unpause it
+                valid_out <= '0';
                 if valid_in='1' then
                     we<='1';
                     mac_init<='1';

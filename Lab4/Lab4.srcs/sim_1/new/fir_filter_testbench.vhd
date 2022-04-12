@@ -21,13 +21,15 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
 
 entity fir_filter_testbench is
 end fir_filter_testbench;
 
 architecture fir_test of fir_filter_testbench is
     
-    constant clk1_period: time := 20ns;
+    signal count : std_logic_vector(7 downto 0) := (others => '1');
+    constant clk1_period: time := 10ns;
     signal clk_test, rst_test, valid_in_test, valid_out_test : std_logic;
     signal x_test : std_logic_vector(7 downto 0);
     signal fir_output_test : std_logic_vector(19 downto 0);
@@ -54,16 +56,61 @@ begin
     stimulus: process begin
         rst_test <= '1';
         valid_in_test <= '1';
-        x_test <= "11111111";
         
-        wait for 10*clk1_period;
-        --wait for 4*clk1_period;
-        --x_test <= "00001111";
-        --wait for 4*clk1_period;
+        for i in 0 to 7 loop
+            x_test <= "11111111";
+            wait for 8*clk1_period;
+        end loop;
         
-        --valid_in_test <= '1';
-        --x_test <= "00000111";
-        --wait for 8*clk1_period;
+        for i in 0 to 7 loop
+            x_test <= "00000000";
+            wait for 8*clk1_period;
+        end loop;
+        
+        for i in 0 to 7 loop
+            valid_in_test <= '0';
+            wait for clk1_period;
+            x_test <= x_test + 1;
+            valid_in_test <= '1';
+            wait for 8*clk1_period;
+        end loop;
+        
+        for i in 0 to 7 loop
+            x_test <= "00000000";
+            wait for 8*clk1_period;
+        end loop;
+        
+        valid_in_test <= '1';
+        x_test <= "00000010"; --2
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00000110"; --6
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00001010"; --10
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00100010"; --34
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "01000010"; --66
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "10000010"; --130
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00000011"; --3
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00000111"; --7
+        wait for 8*clk1_period;
     end process;
     
     clk1_generator: process begin
