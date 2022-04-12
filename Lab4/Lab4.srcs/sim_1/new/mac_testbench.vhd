@@ -55,14 +55,18 @@ begin
     stimulus: process begin
         rst_test <= '1';
         mac_init_test <= '0';
-        wait for 5ps;
+        --wait for 5ps;
+        rom_output_test <= "00001111";
+        ram_output_test <= "00001111";
+        wait for clk1_period;
+        --mac_init_test <= '1';
+        --wait for 5ps;
         rom_output_test <= "00001111";
         ram_output_test <= "00001111";
         wait for clk1_period;
         mac_init_test <= '1';
-        wait for 5ps;
-        rom_output_test <= "00001111";
-        ram_output_test <= "00001111";
+        rom_output_test <= "00000001";
+        ram_output_test <= "00000010";
         wait for clk1_period;
     end process;
     

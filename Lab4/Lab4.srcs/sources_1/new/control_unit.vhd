@@ -40,7 +40,7 @@ entity control_unit is
            ram_address : out STD_LOGIC_VECTOR (2 downto 0);
            we: out STD_LOGIC := '0';
            mac_init : out STD_LOGIC;
-           valid_out : out STD_LOGIC);
+           valid_out : out STD_LOGIC :='0');
 end control_unit;
 
 architecture Behavioral of control_unit is

@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -31,19 +32,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity reg is
-    Port ( D : in STD_LOGIC;
+entity signal_register is
+    Port ( D : in STD_LOGIC_VECTOR (7 downto 0);
            clk : in STD_LOGIC;
            rst : in STD_LOGIC;
-           Q : out STD_LOGIC);
-end reg;
+           Q : out STD_LOGIC_VECTOR (7 downto 0));
+end signal_register;
 
-architecture Behavioral of reg is
+architecture Behavioral of signal_register is
 
 begin
     process(clk, rst) begin
         if rst='0' then
-            Q<='0';
+            Q<="00000000";
         elsif rising_edge(clk) then
             Q<=D;
         end if;
