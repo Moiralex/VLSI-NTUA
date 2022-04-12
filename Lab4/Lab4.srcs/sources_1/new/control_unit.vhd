@@ -45,15 +45,16 @@ end control_unit;
 
 architecture Behavioral of control_unit is
 
-signal addr_count: std_logic_vector(2 downto 0) := (others => '0'); --changed this from '1' to '0'
-signal pause: std_logic := '0';     --initialized pause
+--signal addr_count: std_logic_vector(2 downto 0) := (others => '1');
+signal pause: std_logic;
 
 begin
 
     process(clk, rst)
+    variable addr_count: std_logic_vector(2 downto 0) := (others => '1');
     begin
         if rst='0' then
-            addr_count <= (others => '1');
+            addr_count := (others => '1');
             valid_out<='0';
             mac_init<='1';        
             
@@ -65,7 +66,7 @@ begin
                     pause<='0';
                 end if;
             else
-                addr_count <= addr_count + 1;
+                addr_count := addr_count + 1;
                 if addr_count=0 then --calculation data scanned output will be valid the next cycle
                     valid_out<='1';
                     if valid_in='1' then --if new valid data has arrived start new calculation else pause the system
@@ -81,9 +82,11 @@ begin
                 end if;
             end if;
         end if;
+        
+        ram_address <= addr_count;
+        rom_address <= 7-addr_count;
     end process;
     
-    ram_address <= addr_count;
-    rom_address <= 7-addr_count;
+
 
 end Behavioral;
