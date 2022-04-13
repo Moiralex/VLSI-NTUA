@@ -15,7 +15,7 @@ end mlab_rom;
 
 architecture Behavioral of mlab_rom is
 
-    type rom_type is array (7 downto 0) of std_logic_vector (coeff_width-1 downto 0);                 
+    type rom_type is array (0 to 7) of std_logic_vector (coeff_width-1 downto 0);                 
     signal rom : rom_type:= ("00001000", "00000111", "00000110", "00000101", "00000100", "00000011", "00000010",
                              "00000001");      				 -- initialization of rom with user data                 
 
