@@ -75,11 +75,13 @@ begin
             wait for 8*clk1_period;
         end loop;
         
+        rst_test<='0';
         for i in 0 to 7 loop
             x_test <= "00000000";
             wait for 8*clk1_period;
         end loop;
         
+        rst_test<='1';
         valid_in_test <= '1';
         x_test <= "00000010"; --2
         wait for 8*clk1_period;
@@ -111,6 +113,77 @@ begin
         valid_in_test <= '1';
         x_test <= "00000111"; --7
         wait for 8*clk1_period;
+        
+        ------LAB NUMBERS
+        for i in 0 to 7 loop
+            x_test <= "00000000";
+            wait for 8*clk1_period;
+        end loop;
+        
+        valid_in_test <= '1';
+        x_test <= "11000010"; --194
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "10111110"; --190
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "01100101"; --101
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "10101000"; --168
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00101100"; --44
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "10110101"; --181
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00001001"; --9
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "01000111"; --71
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00001100"; --12
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00011001"; --25
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "11010010"; --210
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "10110010"; --178
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "01010001"; --81
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "11110011"; --243
+        wait for 8*clk1_period;
+        
+        valid_in_test <= '1';
+        x_test <= "00001001"; --9
+        wait for 8*clk1_period;
+        
+        for i in 0 to 7 loop
+            x_test <= "00000000";
+            wait for 8*clk1_period;
+        end loop;
     end process;
     
     clk1_generator: process begin
