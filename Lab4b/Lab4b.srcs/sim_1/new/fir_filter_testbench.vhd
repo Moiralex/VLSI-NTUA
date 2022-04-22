@@ -41,11 +41,83 @@ begin
             wait for clk1_period;
         end loop;
         
+        wait for 10*clk1_period;
+        
+        --reset test
+        rst_test<='0';
+        for i in 0 to 7 loop
+            x_test <= "00000001";
+            wait for clk1_period;
+        end loop;
+        
+        rst_test<='1';
+        
+        --valid_in testbench
+        for i in 0 to 7 loop
+            valid_in_test <= '0';
+            wait for 3*clk1_period;
+            valid_in_test <= '1';
+            wait for clk1_period;
+            x_test <= x_test + 1;
+        end loop;
+        
         for i in 0 to 7 loop
             x_test <= "00000000";
             wait for clk1_period;
         end loop;
-            
+        
+        --LAB NUMBERS
+        valid_in_test <= '1';
+        x_test <= "11000010"; --194
+        wait for clk1_period;
+        
+        x_test <= "10111110"; --190
+        wait for clk1_period;
+        
+        x_test <= "01100101"; --101
+        wait for clk1_period;
+        
+        x_test <= "10101000"; --168
+        wait for clk1_period;
+        
+        x_test <= "00101100"; --44
+        wait for clk1_period;
+        
+        x_test <= "10110101"; --181
+        wait for clk1_period;
+        
+        x_test <= "00001001"; --9
+        wait for clk1_period;
+        
+        x_test <= "01000111"; --71
+        wait for clk1_period;
+        
+        x_test <= "00001100"; --12
+        wait for clk1_period;
+        
+        x_test <= "00011001"; --25
+        wait for clk1_period;
+        
+        x_test <= "11010010"; --210
+        wait for clk1_period;
+        
+        x_test <= "10110010"; --178
+        wait for clk1_period;
+        
+        x_test <= "01010001"; --81
+        wait for clk1_period;
+        
+        x_test <= "11110011"; --243
+        wait for clk1_period;
+        
+        x_test <= "00001001"; --9
+        wait for clk1_period;
+        
+        for i in 0 to 7 loop
+            x_test <= "00000000";
+            wait for clk1_period;
+        end loop;
+        --END LAB NUMBERS
     end process;
     
     clk1_generator: process begin

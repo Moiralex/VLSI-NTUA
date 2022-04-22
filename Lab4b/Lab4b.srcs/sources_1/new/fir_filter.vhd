@@ -81,7 +81,7 @@ architecture fir_filter_arch of fir_filter is
 
 signal input_reg1, input_reg2, input_reg3, input_reg4, input_reg5, input_reg6, input_reg7, input_reg8 : std_logic_vector(7 downto 0);
 signal result_first_multiplier, result_second_multiplier, result_third_multiplier, result_fourth_multiplier, 
-        result_fifth_multiplier, result_sixth_multiplier, result_seventh_multiplier, result_eighth_multiplier : std_logic_vector(20 downto 0);
+        result_fifth_multiplier, result_sixth_multiplier, result_seventh_multiplier, result_eighth_multiplier : std_logic_vector(20 downto 0) := (others => '0');
 
 signal result_first_multiplier_reg1, result_second_multiplier_reg1, result_third_multiplier_reg1 , result_third_multiplier_reg2, result_fourth_multiplier_reg1 , result_fourth_multiplier_reg2, result_fourth_multiplier_reg3, 
         result_fifth_multiplier_reg1, result_fifth_multiplier_reg2, result_fifth_multiplier_reg3, result_fifth_multiplier_reg4, 
@@ -104,35 +104,35 @@ sixth_reg: reg_clk_and_valid_in port map(D=>input_reg5, clk=>clk, valid_in=>vali
 seventh_reg: reg_clk_and_valid_in port map(D=>input_reg6, clk=>clk, valid_in=>valid_in, rst=>rst, Q=>input_reg7);
 eighth_reg: reg_clk_and_valid_in port map(D=>input_reg7, clk=>clk, valid_in=>valid_in, rst=>rst, Q=>input_reg8);
 
-first_multiplier: multiplier port map(A=>input_reg1, coeff=>"00001000", clk=>clk, rst=>rst, result=>result_first_multiplier);
+first_multiplier: multiplier port map(A=>input_reg1, coeff=>"00000001", clk=>clk, rst=>rst, result=>result_first_multiplier);
 reg1: signal_register_20_bit port map(D=>result_first_multiplier, clk=>clk, rst=>rst, Q=>result_first_multiplier_reg1);
 
-second_multiplier: multiplier port map(A=>input_reg2, coeff=>"00000111", clk=>clk, rst=>rst, result=>result_second_multiplier);
+second_multiplier: multiplier port map(A=>input_reg2, coeff=>"00000010", clk=>clk, rst=>rst, result=>result_second_multiplier);
 reg2a: signal_register_20_bit port map(D=>result_second_multiplier, clk=>clk, rst=>rst, Q=>result_second_multiplier_reg1);
 
-third_multiplier: multiplier port map(A=>input_reg3, coeff=>"00000110", clk=>clk, rst=>rst, result=>result_third_multiplier);
+third_multiplier: multiplier port map(A=>input_reg3, coeff=>"00000011", clk=>clk, rst=>rst, result=>result_third_multiplier);
 reg3a: signal_register_20_bit port map(D=>result_third_multiplier, clk=>clk, rst=>rst, Q=>result_third_multiplier_reg1);
 reg3b: signal_register_20_bit port map(D=>result_third_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_third_multiplier_reg2);
 
-fourth_multiplier: multiplier port map(A=>input_reg4, coeff=>"00000101", clk=>clk, rst=>rst, result=>result_fourth_multiplier);
+fourth_multiplier: multiplier port map(A=>input_reg4, coeff=>"00000100", clk=>clk, rst=>rst, result=>result_fourth_multiplier);
 reg4a: signal_register_20_bit port map(D=>result_fourth_multiplier, clk=>clk, rst=>rst, Q=>result_fourth_multiplier_reg1);
 reg4b: signal_register_20_bit port map(D=>result_fourth_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_fourth_multiplier_reg2);
 reg4c: signal_register_20_bit port map(D=>result_fourth_multiplier_reg2, clk=>clk, rst=>rst, Q=>result_fourth_multiplier_reg3);
 
-fifth_multiplier: multiplier port map(A=>input_reg5, coeff=>"00000100", clk=>clk, rst=>rst, result=>result_fifth_multiplier);
+fifth_multiplier: multiplier port map(A=>input_reg5, coeff=>"00000101", clk=>clk, rst=>rst, result=>result_fifth_multiplier);
 reg5a: signal_register_20_bit port map(D=>result_fifth_multiplier, clk=>clk, rst=>rst, Q=>result_fifth_multiplier_reg1);
 reg5b: signal_register_20_bit port map(D=>result_fifth_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_fifth_multiplier_reg2);
 reg5c: signal_register_20_bit port map(D=>result_fifth_multiplier_reg2, clk=>clk, rst=>rst, Q=>result_fifth_multiplier_reg3);
 reg5d: signal_register_20_bit port map(D=>result_fifth_multiplier_reg3, clk=>clk, rst=>rst, Q=>result_fifth_multiplier_reg4);
 
-sixth_multiplier: multiplier port map(A=>input_reg6, coeff=>"00000011", clk=>clk, rst=>rst, result=>result_sixth_multiplier);
+sixth_multiplier: multiplier port map(A=>input_reg6, coeff=>"00000110", clk=>clk, rst=>rst, result=>result_sixth_multiplier);
 reg6a: signal_register_20_bit port map(D=>result_sixth_multiplier, clk=>clk, rst=>rst, Q=>result_sixth_multiplier_reg1);
 reg6b: signal_register_20_bit port map(D=>result_sixth_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_sixth_multiplier_reg2);
 reg6c: signal_register_20_bit port map(D=>result_sixth_multiplier_reg2, clk=>clk, rst=>rst, Q=>result_sixth_multiplier_reg3);
 reg6d: signal_register_20_bit port map(D=>result_sixth_multiplier_reg3, clk=>clk, rst=>rst, Q=>result_sixth_multiplier_reg4);
 reg6e: signal_register_20_bit port map(D=>result_sixth_multiplier_reg4, clk=>clk, rst=>rst, Q=>result_sixth_multiplier_reg5);
 
-seventh_multiplier: multiplier port map(A=>input_reg7, coeff=>"00000010", clk=>clk, rst=>rst, result=>result_seventh_multiplier);
+seventh_multiplier: multiplier port map(A=>input_reg7, coeff=>"00000111", clk=>clk, rst=>rst, result=>result_seventh_multiplier);
 reg7a: signal_register_20_bit port map(D=>result_seventh_multiplier, clk=>clk, rst=>rst, Q=>result_seventh_multiplier_reg1);
 reg7b: signal_register_20_bit port map(D=>result_seventh_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_seventh_multiplier_reg2);
 reg7c: signal_register_20_bit port map(D=>result_seventh_multiplier_reg2, clk=>clk, rst=>rst, Q=>result_seventh_multiplier_reg3);
@@ -140,7 +140,7 @@ reg7d: signal_register_20_bit port map(D=>result_seventh_multiplier_reg3, clk=>c
 reg7e: signal_register_20_bit port map(D=>result_seventh_multiplier_reg4, clk=>clk, rst=>rst, Q=>result_seventh_multiplier_reg5);
 reg7f: signal_register_20_bit port map(D=>result_seventh_multiplier_reg5, clk=>clk, rst=>rst, Q=>result_seventh_multiplier_reg6);
 
-eighth_multiplier: multiplier port map(A=>input_reg8, coeff=>"00000001", clk=>clk, rst=>rst, result=>result_eighth_multiplier);
+eighth_multiplier: multiplier port map(A=>input_reg8, coeff=>"00001000", clk=>clk, rst=>rst, result=>result_eighth_multiplier);
 reg8a: signal_register_20_bit port map(D=>result_eighth_multiplier, clk=>clk, rst=>rst, Q=>result_eighth_multiplier_reg1);
 reg8b: signal_register_20_bit port map(D=>result_eighth_multiplier_reg1, clk=>clk, rst=>rst, Q=>result_eighth_multiplier_reg2);
 reg8c: signal_register_20_bit port map(D=>result_eighth_multiplier_reg2, clk=>clk, rst=>rst, Q=>result_eighth_multiplier_reg3);
