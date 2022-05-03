@@ -58,6 +58,10 @@ begin
             second_result=>second_result_test);
     
     stimulus: process begin
+    
+        rst_test <= '0';
+        wait for clk1_period/4;
+    
         rst_test <= '1';
         valid_in_test <= '1';
         
