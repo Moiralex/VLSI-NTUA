@@ -81,35 +81,36 @@ begin
         --LAB NUMBERS
         valid_in_test <= '1';
         
-        x1_test <= "11000010"; --194
-        x2_test <= "10111110"; --190
+        x2_test <= "11000010"; --194
+        x1_test <= "10111110"; --190
         wait for clk1_period;
         
-        x1_test <= "01100101"; --101
-        x2_test <= "10101000"; --168
+        x2_test <= "01100101"; --101
+        x1_test <= "10101000"; --168
         wait for clk1_period;
         
-        x1_test <= "00101100"; --44
-        x2_test <= "10110101"; --181
+        x2_test <= "00101100"; --44
+        x1_test <= "10110101"; --181
         wait for clk1_period;
         
-        x1_test <= "00001001"; --9
-        x2_test <= "01000111"; --71
+        x2_test <= "00001001"; --9
+        x1_test <= "01000111"; --71
         wait for clk1_period;
         
-        x1_test <= "00001100"; --12
-        x2_test <= "00011001"; --25
+        x2_test <= "00001100"; --12
+        x1_test <= "00011001"; --25
         wait for clk1_period;
         
-        x1_test <= "11010010"; --210
-        x2_test <= "10110010"; --178
+        x2_test <= "11010010"; --210
+        x1_test <= "10110010"; --178
         wait for clk1_period;
         
-        x1_test <= "01010001"; --81
-        x2_test <= "11110011"; --243
+        x2_test <= "01010001"; --81
+        x1_test <= "11110011"; --243
         wait for clk1_period;
         
-        x1_test <= "00001001"; --9
+        x2_test <= "00001001"; --9
+        x1_test <= "00000000"; --0
         wait for clk1_period;
         
         for i in 0 to 4 loop
@@ -117,6 +118,8 @@ begin
             x1_test <= "00000000";
             wait for clk1_period;
         end loop;
+        
+        wait for 11*clk1_period;
     end process;
     
     clk1_generator: process begin
