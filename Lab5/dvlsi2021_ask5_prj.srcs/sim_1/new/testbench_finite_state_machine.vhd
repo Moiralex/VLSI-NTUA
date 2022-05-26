@@ -21,6 +21,8 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use ieee.numeric_std.all;
+use IEEE.std_logic_unsigned.all;
 
 entity testbench_finite_state_machine is
 end testbench_finite_state_machine;
