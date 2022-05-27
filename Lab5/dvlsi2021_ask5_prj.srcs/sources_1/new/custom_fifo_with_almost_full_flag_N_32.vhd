@@ -66,6 +66,8 @@ architecture Behavioral of custom_fifo_with_almost_full_flag_N_32 is
     signal N_squared : std_logic_vector(11 downto 0);
     --signal counter : std_logic_vector(11 downto 0) := (others=>'0');
     signal last_pixels : std_logic := '0';
+    signal srst2 : std_logic := '1';
+    signal valid_signal : std_logic;
 begin
 
 N_squared <= line_size*line_size;
@@ -73,40 +75,56 @@ N_squared <= line_size*line_size;
 generator: fifo_generator_1 port map (clk => clk, srst => srst, din => din, wr_en => wr_en, rd_en => almost_full_mine_or_last_pixels, dout => fifo_out, full => dontcare_full,
                                       almost_full => almost_full_mine, empty => dontcare_empty, valid => valid_reg );
 generator_reg: reg_clk_and_valid_in port map(D => fifo_out, clk => clk, valid_in => wr_en_or_last_pixels, rst => srst, Q => system_out);
-valid_out: reg_1bit_available_output port map(D => wr_en_or_last_pixels, clk => clk, valid_in=>valid_reg, rst => srst, Q => valid);
+valid_out: reg_1bit_available_output port map(D => wr_en_or_last_pixels, clk => clk, valid_in=>valid_reg, rst => srst2, Q => valid_signal);
 
-    process(clk) begin
-        if valid_reg = '1' and (rising_edge(clk)) then
-            counter <= counter + 1;
-        end if;
-        if counter >= N_squared - line_size then
-            last_pixels <= '1';
-        end if;
-        if counter >= N_squared  then
+    process(clk, srst) begin
+        if srst = '1' then
             last_pixels <= '0';
+            srst2 <= '0';
             counter <= (others=>'0');
+            almost_full_mine_or_last_pixels <= '0';
+        else
+            if valid_signal = '1' and (rising_edge(clk)) then
+                counter <= counter + 1;
+            end if;
+            if counter >= N_squared - line_size then
+                last_pixels <= '1';
+            end if;
+            if counter >= N_squared -1  then
+                last_pixels <= '0';
+                srst2 <= '0';
+                counter <= (others=>'0');
+                almost_full_mine_or_last_pixels <= '0';
+            else 
+               srst2 <= '1'; 
+               almost_full_mine_or_last_pixels <= last_pixels or almost_full_mine;
+            end if;
+            
         end if;
     end process;
 
-    process(last_pixels, almost_full_mine) begin
-        almost_full_mine_or_last_pixels <= last_pixels or almost_full_mine;
-    end process;
+    --process(last_pixels, almost_full_mine) begin
+        --if counter >= N_squared then
+            --almost_full_mine_or_last_pixels <= '0';
+        --else
+            --almost_full_mine_or_last_pixels <= last_pixels or almost_full_mine;
+        --end if;
+    --end process;
     
     process(last_pixels, wr_en) begin
         wr_en_or_last_pixels <= last_pixels or wr_en;
     end process;
     
-    --process(clk) begin
-        --if (rising_edge(clk)) and counter >= N_squared then
-            --last_pixels <= '0';
-            --counter <= (others=>'0');
-        --end if;
-    --end process;
-    --process(srst) begin
-        --if srst = '0' then
-            --last_pixels <= '0';
-            --counter <= (others=>'0');
-        --end if;
-    --end process;
+    process(valid_signal) begin
+        valid <= valid_signal;
+    end process;
     
+    --process(srst, last_pixels) begin
+      --  if srst = '0' then 
+        --    srst2 <= '0';
+       -- elsif counter >= N_squared then 
+         --   srst2 <= '0';
+           -- counter <= (others=>'0');
+        --end if;
+    --end process;
 end Behavioral;

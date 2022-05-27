@@ -47,6 +47,27 @@ begin
             wait for 2*clk1_period;
         end loop;
         wr_en_test <= '0';
+        wait for clk1_period;
+        
+        for i in 0 to 40 loop
+            wr_en_test <= '1';
+            din_test <= din_test + 1;
+            wait for clk1_period;
+            wr_en_test <= '0';
+            wait for 2*clk1_period;
+        end loop;
+        
+        srst_test <= '1';
+        wait for clk1_period;
+        srst_test <= '0';
+        
+        for i in 0 to 40 loop
+            wr_en_test <= '1';
+            din_test <= din_test + 1;
+            wait for clk1_period;
+            wr_en_test <= '0';
+            wait for 2*clk1_period;
+        end loop;
         wait;
         --wr_en_test <= '0';
         --wait for 10*clk1_period;

@@ -1,10 +1,10 @@
 // Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2018.3.1 (win64) Build 2489853 Tue Mar 26 04:20:25 MDT 2019
-// Date        : Thu May 26 03:07:43 2022
+// Date        : Thu May 26 03:07:42 2022
 // Host        : DESKTOP-N6SO31K running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               c:/Users/Dimitris/Desktop/vlsi-5/dvlsi2021_lab5/dvlsi2021_ask5_prj/dvlsi2021_ask5_prj.srcs/sources_1/ip/fifo_generator_1/fifo_generator_1_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top fifo_generator_1 -prefix
+//               fifo_generator_1_ fifo_generator_1_stub.v
 // Design      : fifo_generator_1
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z010clg400-1
