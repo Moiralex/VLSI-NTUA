@@ -6,7 +6,7 @@ entity reg_1bit is
     Port ( D : in STD_LOGIC;
            clk : in STD_LOGIC;
            rst : in STD_LOGIC;
-           Q : out STD_LOGIC);
+           Q : out STD_LOGIC :='0');
 end reg_1bit;
 
 architecture Behavioral of reg_1bit is
