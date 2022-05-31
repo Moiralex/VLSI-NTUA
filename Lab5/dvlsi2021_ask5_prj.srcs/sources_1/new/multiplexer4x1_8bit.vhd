@@ -6,7 +6,6 @@ entity multiplexer4x1_8bit is
            D2 : in std_logic_vector(7 downto 0);
            D3 : in std_logic_vector(7 downto 0);
            D4 : in std_logic_vector(7 downto 0);
-           rst : in STD_LOGIC;
            choose : in std_logic_vector(1 downto 0);
            output : out std_logic_vector(7 downto 0));
 end multiplexer4x1_8bit;
@@ -14,10 +13,7 @@ end multiplexer4x1_8bit;
 architecture Behavioral of multiplexer4x1_8bit is
 
 begin
-    process(D1, D2, D3, D4, choose, rst) begin
-        if rst='0' then
-            output<=(others=>'0');
-        end if;            
+    process(D1, D2, D3, D4, choose) begin          
         if choose = "00" then
             output<=D1;
         elsif choose = "01" then
