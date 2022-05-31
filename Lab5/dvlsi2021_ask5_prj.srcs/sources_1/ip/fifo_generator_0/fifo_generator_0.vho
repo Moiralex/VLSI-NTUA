@@ -55,17 +55,13 @@
 COMPONENT fifo_generator_0
   PORT (
     clk : IN STD_LOGIC;
-    rst : IN STD_LOGIC;
-    din : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
+    srst : IN STD_LOGIC;
+    din : IN STD_LOGIC_VECTOR(0 DOWNTO 0);
     wr_en : IN STD_LOGIC;
     rd_en : IN STD_LOGIC;
-    dout : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
+    dout : OUT STD_LOGIC_VECTOR(0 DOWNTO 0);
     full : OUT STD_LOGIC;
-    almost_full : OUT STD_LOGIC;
-    empty : OUT STD_LOGIC;
-    valid : OUT STD_LOGIC;
-    wr_rst_busy : OUT STD_LOGIC;
-    rd_rst_busy : OUT STD_LOGIC
+    empty : OUT STD_LOGIC
   );
 END COMPONENT;
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------
@@ -77,17 +73,13 @@ END COMPONENT;
 your_instance_name : fifo_generator_0
   PORT MAP (
     clk => clk,
-    rst => rst,
+    srst => srst,
     din => din,
     wr_en => wr_en,
     rd_en => rd_en,
     dout => dout,
     full => full,
-    almost_full => almost_full,
-    empty => empty,
-    valid => valid,
-    wr_rst_busy => wr_rst_busy,
-    rd_rst_busy => rd_rst_busy
+    empty => empty
   );
 -- INST_TAG_END ------ End INSTANTIATION Template ---------
 

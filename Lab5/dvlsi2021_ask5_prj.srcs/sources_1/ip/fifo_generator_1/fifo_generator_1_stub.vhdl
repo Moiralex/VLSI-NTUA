@@ -1,10 +1,10 @@
--- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
--- Tool Version: Vivado v.2018.3.1 (win64) Build 2489853 Tue Mar 26 04:20:25 MDT 2019
--- Date        : Thu May 26 03:07:42 2022
--- Host        : DESKTOP-N6SO31K running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub -rename_top fifo_generator_1 -prefix
---               fifo_generator_1_ fifo_generator_1_stub.vhdl
+-- Tool Version: Vivado v.2018.3 (win64) Build 2405991 Thu Dec  6 23:38:27 MST 2018
+-- Date        : Mon May 30 19:02:51 2022
+-- Host        : DESKTOP-5VPD5I3 running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -force -mode synth_stub
+--               e:/VLSI/Lab5/Lab5.srcs/sources_1/ip/fifo_generator_1/fifo_generator_1_stub.vhdl
 -- Design      : fifo_generator_1
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7z010clg400-1
@@ -34,6 +34,6 @@ attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
 attribute black_box_pad_pin of stub : architecture is "clk,srst,din[7:0],wr_en,rd_en,dout[7:0],full,almost_full,empty,valid";
 attribute x_core_info : string;
-attribute x_core_info of stub : architecture is "fifo_generator_v13_2_3,Vivado 2018.3.1";
+attribute x_core_info of stub : architecture is "fifo_generator_v13_2_3,Vivado 2018.3";
 begin
 end;
