@@ -29,8 +29,8 @@ end testbench_fifo_with_registers;
 architecture Behavioral of testbench_fifo_with_registers is
     
     signal reg_output_1_1 , reg_output_1_2 , reg_output_1_3, reg_output_2_1, reg_output_2_2, reg_output_2_3,
-     reg_output_3_1, reg_output_3_2, reg_output_3_3: STD_LOGIC_VECTOR(7 DOWNTO 0); 
-    signal input : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others=>'0');
+     reg_output_3_1, reg_output_3_2, reg_output_3_3, output_first_fifo: STD_LOGIC_VECTOR(7 DOWNTO 0); 
+    signal input : STD_LOGIC_VECTOR(7 DOWNTO 0) := (others=>'1');
     signal clk, rst, valid_in, new_image, full : std_logic;
     signal counter_in :  std_logic_vector(10 downto 0) := (others=>'0'); 
     signal counter_out_fifo3 :  std_logic_vector(10 downto 0) := (others=>'0');
@@ -53,7 +53,8 @@ architecture Behavioral of testbench_fifo_with_registers is
             reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             counter_in : inout std_logic_vector(10 downto 0) := (others=>'0'); 
-            counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0')
+            counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');
+            output_first_fifo : inout std_logic_vector(7 downto 0)
           );
     end component;
 
@@ -77,18 +78,19 @@ uut : fifo_with_registers
         reg_output_3_1 => reg_output_3_1,
         reg_output_3_2 => reg_output_3_2,
         reg_output_3_3 => reg_output_3_3,
+        output_first_fifo => output_first_fifo,
         counter_in => counter_in,
         counter_out_fifo3 => counter_out_fifo3
       );  
         
     stimulus: process begin
         valid_in <= '1';
-        input <= "00001111";
-        wait for clk1_period;
-        input <= "01001111";
-        wait for clk1_period;
+        --input <= "00001111";
+        --wait for clk1_period;
+        --input <= "01001111";
+        --wait for clk1_period;
         input <= "00000000";
-        wait for clk1_period;
+        --wait for clk1_period;
         rst <= '0';
         new_image <= '1';
         
@@ -103,7 +105,7 @@ uut : fifo_with_registers
             --wait for 2*clk1_period;
         end loop;
         --wr_en_test <= '0';
-        
+        input <= input + 2;
         wait for 10*clk1_period;
     end process;
     
