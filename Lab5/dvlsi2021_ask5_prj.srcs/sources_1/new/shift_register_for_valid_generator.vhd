@@ -2,7 +2,7 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 31.05.2022 23:51:34
+-- Create Date: 01.06.2022 09:25:45
 -- Design Name: 
 -- Module Name: shift_register_for_valid_generator - Behavioral
 -- Project Name: 
@@ -32,10 +32,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity shift_register_for_valid_generator is
-    Port ( clk : in STD_LOGIC;
-           rst : in STD_LOGIC;
-           D : in STD_LOGIC;
-           Q : out STD_LOGIC);
+--  Port ( );
 end shift_register_for_valid_generator;
 
 architecture Behavioral of shift_register_for_valid_generator is

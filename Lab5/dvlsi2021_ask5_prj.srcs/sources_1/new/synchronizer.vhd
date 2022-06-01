@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity synchronizer is
     generic (
-        N : STD_LOGIC_VECTOR(9 downto 0)
+        N : STD_LOGIC_VECTOR(11 downto 0) := "10000"
     );
     Port ( clk : in STD_LOGIC;
            rst : in STD_LOGIC;
@@ -43,7 +43,7 @@ entity synchronizer is
            new_line : out STD_LOGIC;
            first_line : out STD_LOGIC;
            last_line : out STD_LOGIC;
-           image_finished : out STD_LOGIC);
+           image_finished : out STD_LOGIC := '0');
 end synchronizer;
 
 architecture Structural of synchronizer is
@@ -90,7 +90,8 @@ column_counter: counter_with_signals
 last_col <= intermediate_last_col;
 
 line_counter_en_gate: and_gate port map (X_and => intermediate_last_col, Y_and => early_valid, Z_and => line_counter_en);
-    
+new_line <= line_counter_en;
+
 line_counter: counter_with_signals
     generic map (N=>N) 
     port map (en => line_counter_en, clk =>clk, rst => rst, equals_zero => first_line, equals_N_minus_1 => intermediate_last_line);
