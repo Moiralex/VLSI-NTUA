@@ -41,7 +41,8 @@ entity fifo_with_registers is
         reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         counter_in : inout std_logic_vector(10 downto 0) := (others=>'0'); 
-        counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0')
+        counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');
+        output_first_fifo : inout std_logic_vector(7 downto 0)
       );
 end fifo_with_registers;
 
@@ -70,8 +71,9 @@ architecture Behavioral of fifo_with_registers is
                Q : out STD_LOGIC_VECTOR (7 downto 0));
     end component;
     
-    signal output_first_fifo, output_second_fifo, output_third_fifo : std_logic_vector(7 downto 0);
-    signal output_reg_1_1, output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
+    --signal output_first_fifo, 
+    signal output_second_fifo, output_third_fifo : std_logic_vector(7 downto 0);
+    signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
     signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic;
@@ -89,17 +91,17 @@ fifo_second_line: fifo_generator_1 port map (clk=>clk,  srst=>rst, din=>output_f
 fifo_third_line: fifo_generator_1 port map (clk=>clk,  srst=>rst, din=>output_second_fifo, wr_en=>wr_fifo3, rd_en=>rd_fifo3, dout=>output_third_fifo, 
                  full=>full_fifo3, almost_full=>dontcare5, empty=>dontcare6,  valid=>valid_fifo3);
                  
-first_line_first_reg:  reg_clk_and_valid_in port map (D=>output_first_fifo, clk=>clk, valid_in=>rd_fifo1, rst=>rst, Q=>output_reg_1_1);
-first_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_1, clk=>clk, valid_in=>rd_fifo1, rst=>rst, Q=>output_reg_1_2);
-first_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_2, clk=>clk, valid_in=>rd_fifo1, rst=>rst, Q=>reg_output_1_3);
+first_line_first_reg:  reg_clk_and_valid_in port map (D=>output_first_fifo, clk=>clk, valid_in=>valid_fifo1, rst=>rst, Q=>output_reg_1_1);
+first_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_1, clk=>clk, valid_in=>valid_fifo1, rst=>rst, Q=>output_reg_1_2);
+first_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_2, clk=>clk, valid_in=>valid_fifo1, rst=>rst, Q=>reg_output_1_3);
 
-second_line_first_reg:  reg_clk_and_valid_in port map (D=>output_second_fifo, clk=>clk, valid_in=>rd_fifo2, rst=>rst, Q=>output_reg_2_1);
-second_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_1, clk=>clk, valid_in=>rd_fifo2, rst=>rst, Q=>output_reg_2_2);
-second_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_2, clk=>clk, valid_in=>rd_fifo2, rst=>rst, Q=>reg_output_2_3);
+second_line_first_reg:  reg_clk_and_valid_in port map (D=>output_second_fifo, clk=>clk, valid_in=>valid_fifo2, rst=>rst, Q=>output_reg_2_1);
+second_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_1, clk=>clk, valid_in=>valid_fifo2, rst=>rst, Q=>output_reg_2_2);
+second_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_2, clk=>clk, valid_in=>valid_fifo2, rst=>rst, Q=>reg_output_2_3);
 
-third_line_first_reg:  reg_clk_and_valid_in port map (D=>output_third_fifo, clk=>clk, valid_in=>rd_fifo3, rst=>rst, Q=>output_reg_3_1);
-third_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_1, clk=>clk, valid_in=>rd_fifo3, rst=>rst, Q=>output_reg_3_2);
-third_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_2, clk=>clk, valid_in=>rd_fifo3, rst=>rst, Q=>reg_output_3_3);
+third_line_first_reg:  reg_clk_and_valid_in port map (D=>output_third_fifo, clk=>clk, valid_in=>valid_fifo3, rst=>rst, Q=>output_reg_3_1);
+third_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_1, clk=>clk, valid_in=>valid_fifo3, rst=>rst, Q=>output_reg_3_2);
+third_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_2, clk=>clk, valid_in=>valid_fifo3, rst=>rst, Q=>reg_output_3_3);
 
 reg_output_1_1 <= output_reg_1_1;
 reg_output_1_2 <= output_reg_1_2;
@@ -107,24 +109,42 @@ reg_output_2_1 <= output_reg_2_1;
 reg_output_2_2 <= output_reg_2_2;
 reg_output_3_1 <= output_reg_3_1;
 reg_output_3_2 <= output_reg_3_2;
-full <= full_fifo1;
+full <= full_fifo2;
 
 process (clk, new_image) begin
     if rst = '0' then 
         if new_image = '1' then
             new_image_came <= '1';
+            wr_fifo1 <= valid_in ;
+            --if valid_in = '1' then 
+              --  counter_in <= counter_in + 1;
+            --end if;
         end if;
         
         if new_image_came = '1' and (rising_edge(clk))then 
-            if counter_in < 32 then
-                wr_fifo1 <= valid_in or new_image;
+            if counter_in < 30 then
+                wr_fifo1 <= valid_in ;
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in < 64 then
+            elsif counter_in = 30 then
+                wr_fifo1 <= valid_in;
+                rd_fifo1 <= valid_in;
+                if valid_in = '1' then 
+                    counter_in <= counter_in + 1;
+                end if;
+            elsif counter_in < 62 then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 wr_fifo2 <= valid_in;
+                if valid_in = '1' then 
+                    counter_in <= counter_in + 1;
+                end if;
+            elsif counter_in = 62 then
+                wr_fifo1 <= valid_in;
+                rd_fifo1 <= valid_in;
+                wr_fifo2 <= valid_in;
+                rd_fifo2 <= valid_in;
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
@@ -153,6 +173,7 @@ process (clk, new_image) begin
                 if counter_in = 1024 then 
                     counter_in <= (others=>'0');
                     new_image_came <= '0';
+                    wr_fifo1 <= '0';
                 end if;
             end if;
         end if;
@@ -161,19 +182,23 @@ process (clk, new_image) begin
     if counter_out_fifo3 = 1024 then 
         counter_out_fifo3 <= (others => '0');
         --new_image_came <= '0';
-        wr_fifo1 <= '0';
-        rd_fifo1 <= '0';
-        wr_fifo2 <= '0';
+        --wr_fifo1 <= '0';
+        --rd_fifo1 <= '0';
+        --wr_fifo2 <= '0';
+        --rd_fifo2 <= '0';
+        --wr_fifo3 <= '0';
+        rd_fifo3 <= '0';
+    elsif counter_out_fifo3 > (1024-31) then --31 stin 3h fifo
+        rd_fifo3 <= '1';
         rd_fifo2 <= '0';
         wr_fifo3 <= '0';
-        rd_fifo3 <= '0';
-    elsif counter_out_fifo3 > (1024-32) then --31 stin 3h fifo
-        rd_fifo3 <= '1';
         if (rising_edge(clk)) then 
             counter_out_fifo3 <= counter_out_fifo3 + 1;
         end if;
-    elsif counter_out_fifo3 > (1024-64) then --31 stin 3h fifo kai 31 stin 2h fifo
+    elsif counter_out_fifo3 > (1024-63) then --31 stin 3h fifo kai 31 stin 2h fifo
+        rd_fifo1 <= '0';
         rd_fifo2 <= '1';
+        wr_fifo2 <= '0';
         if (rising_edge(clk)) then 
             counter_out_fifo3 <= counter_out_fifo3 + 1;
         end if;
