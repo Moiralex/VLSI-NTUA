@@ -84,6 +84,7 @@ uut : fifo_with_registers
       );  
         
     stimulus: process begin
+        wait for clk1_period;
         valid_in <= '1';
         --input <= "00001111";
         --wait for clk1_period;

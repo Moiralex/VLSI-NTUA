@@ -15,7 +15,7 @@ architecture Behavioral of testbench_counter_with_signals is
     
     component counter_with_signals is
     generic (
-        N : STD_LOGIC_VECTOR(9 downto 0)
+        N : STD_LOGIC_VECTOR(11 downto 0)
     );
     Port ( en : in STD_LOGIC;
            clk : in STD_LOGIC;
