@@ -9,10 +9,12 @@ int main(int argc, char *argv[]){
 	int N, i, j, read_value, line_odd_even=0, pixel_odd_even=0;
 
 
-	if(argc>1)
+	if(argc>2) {
 		file = fopen(argv[1], "r");
+        N=atoi(argv[2]);
+	}
 	else{
-		printf ("dwse arxeio\n");
+		printf ("dwse arxeio kai N\n");
 		return 0;
 	}
 
@@ -20,7 +22,6 @@ int main(int argc, char *argv[]){
         printf("file can't be opened \n");
     }
 
-    fscanf (file, "%d", &N);
 
     Bayer_values = (int**)malloc((N+2) * sizeof(int*));
     Green = (int**)malloc((N+1) * sizeof(int*));
@@ -59,7 +60,7 @@ int main(int argc, char *argv[]){
 	    		if(pixel_odd_even == 0){ //green
 		    		Green[i][j] = Bayer_values[i][j];
 		    		Blue[i][j] = (Bayer_values[i][j-1]+Bayer_values[i][j+1])/2;
-		    		Red[i][j] = (Bayer_values[i][j-1]+Bayer_values[i][j+1])/2;
+		    		Red[i][j] = (Bayer_values[i-1][j]+Bayer_values[i+1][j])/2;
 		    	}
 		    	else{	//blue
 		    		Green[i][j] = (Bayer_values[i][j-1]+Bayer_values[i][j+1]+Bayer_values[i-1][j]+Bayer_values[i+1][j])/4;
