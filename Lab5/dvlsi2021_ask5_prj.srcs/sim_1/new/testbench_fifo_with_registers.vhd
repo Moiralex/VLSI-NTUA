@@ -92,7 +92,7 @@ uut : fifo_with_registers
         --wait for clk1_period;
         input <= "00000000";
         --wait for clk1_period;
-        rst <= '0';
+        rst <= '1';
         new_image <= '1';
         
         wait for clk1_period;
@@ -106,8 +106,9 @@ uut : fifo_with_registers
             --wait for 2*clk1_period;
         end loop;
         --wr_en_test <= '0';
-        input <= input + 2;
+        input <= "00000000";
         wait for 10*clk1_period;
+        wait;
     end process;
     
     clk1_generator: process begin

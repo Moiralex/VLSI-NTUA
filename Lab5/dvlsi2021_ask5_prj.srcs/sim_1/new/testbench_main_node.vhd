@@ -34,7 +34,7 @@ architecture Behavioral of testbench_main_node is
     --signal value_read: std_logic_vector(7 downto 0);
     signal clk_counter : std_logic_vector (12 downto 0) := (others => '0');
     --debug
-    --signal next_state: std_logic_vector(1 downto 0);
+    signal next_state: std_logic_vector(1 downto 0);
     --debug
 
     component main_node is
@@ -45,7 +45,7 @@ architecture Behavioral of testbench_main_node is
             green : out std_logic_vector(7 downto 0);
             blue : out std_logic_vector(7 downto 0);
             --debug
-            --next_state: out std_logic_vector(1 downto 0);
+            next_state: out std_logic_vector(1 downto 0);
             --debug
             valid_out, image_finished : out std_logic);
     end component;
@@ -62,7 +62,9 @@ begin
             red => red,
             blue => blue, 
             green =>  green,
-            --next_state => next_state,
+            --debug
+            next_state => next_state,
+            --debug
             valid_out => valid_out, image_finished => image_finished);
     
     stimulus: process 
@@ -92,7 +94,7 @@ begin
                 wait for clk1_period/2;
         end loop;
         
-        valid_in <= '0'; 
+        --valid_in <= '0'; 
         wait; 
         
             
