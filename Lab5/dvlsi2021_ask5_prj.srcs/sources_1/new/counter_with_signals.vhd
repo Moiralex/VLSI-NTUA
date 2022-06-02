@@ -43,10 +43,16 @@ begin
     process(clk, rst) begin
         if rst='0' then
             counter<=(others=>'0');
-        elsif en='1' and (rising_edge(clk)) and counter<N-1 then
-            counter <= counter+1;
-        elsif en='1' and (rising_edge(clk)) and counter=N-1 then
-            counter <= (others=>'0');
+        elsif rising_edge(clk) then
+            if en='1' and counter<N-1 then
+                counter <= counter+1;
+            elsif en='1' and counter=N-1 then
+                counter <= (others=>'0');
+            end if;
+        --elsif en='1' and (rising_edge(clk)) and counter<N-1 then
+        --    counter <= counter+1;
+        --elsif en='1' and (rising_edge(clk)) and counter=N-1 then
+        --    counter <= (others=>'0');
         end if;
     end process;
     

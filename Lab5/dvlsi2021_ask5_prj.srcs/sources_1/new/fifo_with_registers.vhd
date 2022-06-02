@@ -124,93 +124,97 @@ process (clk, new_image) begin
             --end if;
         end if;
         
-        if new_image_came = '1' and (rising_edge(clk))then 
-            if counter_in < N-2 then
-                wr_fifo1 <= valid_in ;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
+        if rising_edge(clk) then
+            if new_image_came = '1' then 
+                if counter_in < N-2 then
+                    wr_fifo1 <= valid_in ;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                elsif counter_in = N-2 then
+                    wr_fifo1 <= valid_in;
+                    rd_fifo1 <= valid_in;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                elsif counter_in < N+N-2 then
+                    wr_fifo1 <= valid_in;
+                    rd_fifo1 <= valid_in;
+                    wr_fifo2 <= valid_in;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                elsif counter_in = N+N-2 then
+                    wr_fifo1 <= valid_in;
+                    rd_fifo1 <= valid_in;
+                    wr_fifo2 <= valid_in;
+                    rd_fifo2 <= valid_in;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                elsif counter_in < N+N+N-2 then
+                    wr_fifo1 <= valid_in;
+                    rd_fifo1 <= valid_in;
+                    wr_fifo2 <= valid_in;
+                    rd_fifo2 <= valid_in;
+                    wr_fifo3 <= valid_in;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                elsif counter_in <= N*N then
+                    wr_fifo1 <= valid_in;
+                    rd_fifo1 <= valid_in;
+                    wr_fifo2 <= valid_in;
+                    rd_fifo2 <= valid_in;
+                    wr_fifo3 <= valid_in;
+                    rd_fifo3 <= valid_in;
+                    if rd_fifo3 = '1' then 
+                        counter_out_fifo3 <= counter_out_fifo3 + 1;
+                    end if;
+                    if valid_in = '1' then 
+                        counter_in <= counter_in + 1;
+                    end if;
+                    if counter_in = N*N then 
+                        counter_in <= (others=>'0');
+                        new_image_came <= '0';
+                        wr_fifo1 <= '0';
+                    end if;
                 end if;
-            elsif counter_in = N-2 then
-                wr_fifo1 <= valid_in;
-                rd_fifo1 <= valid_in;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
-                end if;
-            elsif counter_in < N+N-2 then
-                wr_fifo1 <= valid_in;
-                rd_fifo1 <= valid_in;
-                wr_fifo2 <= valid_in;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
-                end if;
-            elsif counter_in = N+N-2 then
-                wr_fifo1 <= valid_in;
-                rd_fifo1 <= valid_in;
-                wr_fifo2 <= valid_in;
-                rd_fifo2 <= valid_in;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
-                end if;
-            elsif counter_in < N+N+N-2 then
-                wr_fifo1 <= valid_in;
-                rd_fifo1 <= valid_in;
-                wr_fifo2 <= valid_in;
-                rd_fifo2 <= valid_in;
-                wr_fifo3 <= valid_in;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
-                end if;
-            elsif counter_in <= N*N then
-                wr_fifo1 <= valid_in;
-                rd_fifo1 <= valid_in;
-                wr_fifo2 <= valid_in;
-                rd_fifo2 <= valid_in;
-                wr_fifo3 <= valid_in;
-                rd_fifo3 <= valid_in;
-                if rd_fifo3 = '1' then 
+           
+           elsif counter_out_fifo3 = N*N then 
+                counter_out_fifo3 <= (others => '0');
+                --new_image_came <= '0';
+                --wr_fifo1 <= '0';
+                --rd_fifo1 <= '0';
+                --wr_fifo2 <= '0';
+                --rd_fifo2 <= '0';
+                --wr_fifo3 <= '0';
+                rd_fifo3 <= '0';
+            elsif counter_out_fifo3 > (N*N-(N-1)) then --31 stin 3h fifo
+                rd_fifo3 <= '1';
+                rd_fifo2 <= '0';
+                wr_fifo3 <= '0';
+                if (rising_edge(clk)) then 
                     counter_out_fifo3 <= counter_out_fifo3 + 1;
                 end if;
-                if valid_in = '1' then 
-                    counter_in <= counter_in + 1;
+            elsif counter_out_fifo3 > (N*N-(N+N-1)) then --31 stin 3h fifo kai 31 stin 2h fifo
+                rd_fifo1 <= '0';
+                rd_fifo2 <= '1';
+                wr_fifo2 <= '0';
+                if (rising_edge(clk)) then 
+                    counter_out_fifo3 <= counter_out_fifo3 + 1;
                 end if;
-                if counter_in = N*N then 
-                    counter_in <= (others=>'0');
-                    new_image_came <= '0';
-                    wr_fifo1 <= '0';
+            elsif counter_out_fifo3 > N*N-(N+N+N-1) then --31 stin 3h fifo kai 31 stin 2h fifo kai 31 sthn 1h
+                rd_fifo1 <= '1';
+                if (rising_edge(clk)) then 
+                    counter_out_fifo3 <= counter_out_fifo3 + 1;
                 end if;
-            end if;
+            end if; 
+            
         end if;
     end if;
     
-    if counter_out_fifo3 = N*N then 
-        counter_out_fifo3 <= (others => '0');
-        --new_image_came <= '0';
-        --wr_fifo1 <= '0';
-        --rd_fifo1 <= '0';
-        --wr_fifo2 <= '0';
-        --rd_fifo2 <= '0';
-        --wr_fifo3 <= '0';
-        rd_fifo3 <= '0';
-    elsif counter_out_fifo3 > (N*N-(N-1)) then --31 stin 3h fifo
-        rd_fifo3 <= '1';
-        rd_fifo2 <= '0';
-        wr_fifo3 <= '0';
-        if (rising_edge(clk)) then 
-            counter_out_fifo3 <= counter_out_fifo3 + 1;
-        end if;
-    elsif counter_out_fifo3 > (N*N-(N+N-1)) then --31 stin 3h fifo kai 31 stin 2h fifo
-        rd_fifo1 <= '0';
-        rd_fifo2 <= '1';
-        wr_fifo2 <= '0';
-        if (rising_edge(clk)) then 
-            counter_out_fifo3 <= counter_out_fifo3 + 1;
-        end if;
-    elsif counter_out_fifo3 > N*N-(N+N+N-1) then --31 stin 3h fifo kai 31 stin 2h fifo kai 31 sthn 1h
-        rd_fifo1 <= '1';
-        if (rising_edge(clk)) then 
-            counter_out_fifo3 <= counter_out_fifo3 + 1;
-        end if;
-    end if;
+    
    
 end process;
     

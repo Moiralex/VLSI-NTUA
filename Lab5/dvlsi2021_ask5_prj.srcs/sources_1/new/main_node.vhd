@@ -13,13 +13,14 @@ entity main_node is
         blue : out std_logic_vector(7 downto 0);
         green : out std_logic_vector(7 downto 0);
         --debug
-        --next_state: out std_logic_vector(1 downto 0);
+        next_state: out std_logic_vector(1 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node;
 
 architecture Behavioral of main_node is
     component fifo_with_registers is
+      generic (N: std_logic_vector(11 downto 0) := "000000100000");
       Port ( clk : IN STD_LOGIC;
             rst : IN STD_LOGIC;
             valid_in : IN STD_LOGIC;
@@ -127,7 +128,10 @@ sync:  synchronizer
 fsm: finite_state_machine
         port map ( early_valid => early_valid, line0=> new_line, rst=>rst, clk => clk, y => states);
 
-fifo: fifo_with_registers 
+fifo: fifo_with_registers
+      generic map (
+            N => "000000100000"
+      ) 
       Port map( clk => clk,
             rst => rst,
             valid_in => valid_in,
@@ -168,5 +172,5 @@ comp: computation_module
                green => green,
                blue => blue);
 
---next_state <= states;
+next_state <= states;
 end Behavioral;
