@@ -12,7 +12,7 @@ architecture fsm_arch of finite_state_machine is
 begin
 sync_proc: process(rst, clk, next_state)
     begin
-        if (rst = '1') then
+        if (rst = '0') then
             current_state <= G_B; 
             --y <= "00";
         elsif (rising_edge(clk)) then
@@ -24,7 +24,7 @@ sync_proc: process(rst, clk, next_state)
     --stays the same again
     comb_proc: process(current_state, line0, early_valid)
     begin
-        if rst = '0' then
+        if rst = '1' then
             case current_state is
                 when G_B =>  --current state green in a line with green and blue
                     if early_valid = '0' then 

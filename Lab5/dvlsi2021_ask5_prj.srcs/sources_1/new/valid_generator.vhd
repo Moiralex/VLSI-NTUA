@@ -78,6 +78,7 @@ signal not_rst, shift_out_normalized, first_reg_out, early_valid_temp : std_logi
 signal valid_in_vectorized, first_shift_out, shift_out : std_logic_vector(0 downto 0);
 signal counter : std_logic_vector (11 downto 0) := (others => '0');
 signal wr: std_logic :='1';
+--signal wr: std_logic :='0';
 signal rd: std_logic :='0';
 
 begin
@@ -87,7 +88,7 @@ begin
             wr <= '0';
             rd <= '0';
         elsif rising_edge(clk) then
-            if counter<(N+N-2) then
+            if counter<(N+N-2) then --should be N+N+2 if we do not wanna miss first data (wr=1 at the beginning)
                 counter <= counter + 1;
                 wr <= '1';
                 rd <= '0';

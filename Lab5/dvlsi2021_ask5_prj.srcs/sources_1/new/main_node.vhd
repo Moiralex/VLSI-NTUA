@@ -7,11 +7,14 @@ use IEEE.std_logic_unsigned.all;
 
 entity main_node is
   Port (clk : in std_logic;
-        rst, valid_in, rd_check, new_image : in std_logic;
+        rst, valid_in, new_image : in std_logic;
         input : in std_logic_vector(7 downto 0);
         red : out std_logic_vector(7 downto 0);
         blue : out std_logic_vector(7 downto 0);
         green : out std_logic_vector(7 downto 0);
+        --debug
+        --next_state: out std_logic_vector(1 downto 0);
+        --debug
         valid_out, image_finished : out std_logic);
 end main_node;
 
@@ -68,7 +71,7 @@ architecture Behavioral of main_node is
     
     component synchronizer is
         generic (
-            N : STD_LOGIC_VECTOR(11 downto 0) := "10000"
+            N : STD_LOGIC_VECTOR(11 downto 0) := "000000100000"
         );
         Port ( clk : in STD_LOGIC;
                rst : in STD_LOGIC;
@@ -109,7 +112,7 @@ valid_generator2: valid_generator
 
 sync:  synchronizer 
         generic map (
-            N => "10000"
+            N => "000000100000"
         )
         Port map( clk => clk,
                rst => rst,
@@ -164,4 +167,6 @@ comp: computation_module
                red => red,
                green => green,
                blue => blue);
+
+--next_state <= states;
 end Behavioral;

@@ -14,7 +14,7 @@ architecture Behavioral of reg_clk_and_valid_in is
 
 begin
     process(clk, rst) begin
-        if rst='1' then
+        if rst='0' then
             Q<=(others => '0');
         elsif rising_edge(clk) and valid_in = '1' then
             Q<=D;

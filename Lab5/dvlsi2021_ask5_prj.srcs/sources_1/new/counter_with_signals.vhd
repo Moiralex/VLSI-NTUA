@@ -27,7 +27,7 @@ use IEEE.std_logic_unsigned.all;
 
 entity counter_with_signals is
     generic (
-        N : STD_LOGIC_VECTOR(9 downto 0)
+        N : STD_LOGIC_VECTOR(11 downto 0) := "000000010000"
     );
     Port ( en : in STD_LOGIC;
            clk : in STD_LOGIC;
@@ -37,7 +37,7 @@ entity counter_with_signals is
 end counter_with_signals;
 
 architecture Behavioral of counter_with_signals is
-signal counter: STD_LOGIC_VECTOR(9 downto 0) := "0000000000";
+signal counter: STD_LOGIC_VECTOR(11 downto 0) := "000000000000";
 
 begin
     process(clk, rst) begin
@@ -51,7 +51,7 @@ begin
     end process;
     
     with counter select
-        equals_zero <= '1' when "0000000000",
+        equals_zero <= '1' when "000000000000",
                         '0' when others;
     with counter select
         equals_N_minus_1 <= '1' when N-1,

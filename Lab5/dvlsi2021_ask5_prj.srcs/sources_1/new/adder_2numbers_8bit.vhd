@@ -15,7 +15,7 @@ begin
     process(A, B)
         variable tmp1: std_logic_vector (8 downto 0);
         begin
-            tmp1 := A+B;
+            tmp1 := ('0'&A) + ('0'&B);
             mean<= tmp1(8 downto 1); --divide by 2
     end process;
 end adder_arch;

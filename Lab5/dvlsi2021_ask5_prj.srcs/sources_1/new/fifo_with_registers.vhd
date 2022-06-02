@@ -25,6 +25,7 @@ use ieee.numeric_std.all;
 use IEEE.std_logic_unsigned.all;
 
 entity fifo_with_registers is
+  generic (N: std_logic_vector(11 downto 0) := "000000100000");
   Port ( clk : IN STD_LOGIC;
         rst : IN STD_LOGIC;
         valid_in : IN STD_LOGIC;
@@ -76,6 +77,7 @@ architecture Behavioral of fifo_with_registers is
     signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
+    signal not_rst: std_logic;
     signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic;
     signal rd_fifo1, rd_fifo2, rd_fifo3 : std_logic;
     signal valid_fifo1, valid_fifo2, valid_fifo3 : std_logic;
@@ -84,11 +86,11 @@ architecture Behavioral of fifo_with_registers is
     signal new_image_came : std_logic := '0';
 begin
 
-fifo_first_line: fifo_generator_1 port map (clk=>clk,  srst=>rst, din=>input, wr_en=>wr_fifo1, rd_en =>rd_fifo1, dout => output_first_fifo,
+fifo_first_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>input, wr_en=>wr_fifo1, rd_en =>rd_fifo1, dout => output_first_fifo,
                  full=>full_fifo1, almost_full=>dontcare1, empty=>dontcare2, valid=>valid_fifo1);
-fifo_second_line: fifo_generator_1 port map (clk=>clk,  srst=>rst, din=>output_first_fifo, wr_en=>wr_fifo2, rd_en=>rd_fifo2, dout=>output_second_fifo, 
+fifo_second_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>output_first_fifo, wr_en=>wr_fifo2, rd_en=>rd_fifo2, dout=>output_second_fifo, 
                  full=>full_fifo2, almost_full=>dontcare3, empty=>dontcare4, valid=>valid_fifo2);
-fifo_third_line: fifo_generator_1 port map (clk=>clk,  srst=>rst, din=>output_second_fifo, wr_en=>wr_fifo3, rd_en=>rd_fifo3, dout=>output_third_fifo, 
+fifo_third_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>output_second_fifo, wr_en=>wr_fifo3, rd_en=>rd_fifo3, dout=>output_third_fifo, 
                  full=>full_fifo3, almost_full=>dontcare5, empty=>dontcare6,  valid=>valid_fifo3);
                  
 first_line_first_reg:  reg_clk_and_valid_in port map (D=>output_first_fifo, clk=>clk, valid_in=>valid_fifo1, rst=>rst, Q=>output_reg_1_1);
@@ -110,9 +112,10 @@ reg_output_2_2 <= output_reg_2_2;
 reg_output_3_1 <= output_reg_3_1;
 reg_output_3_2 <= output_reg_3_2;
 full <= full_fifo2;
+not_rst <= not rst;
 
 process (clk, new_image) begin
-    if rst = '0' then 
+    if rst = '1' then 
         if new_image = '1' then
             new_image_came <= '1';
             wr_fifo1 <= valid_in ;
@@ -122,25 +125,25 @@ process (clk, new_image) begin
         end if;
         
         if new_image_came = '1' and (rising_edge(clk))then 
-            if counter_in < 30 then
+            if counter_in < N-2 then
                 wr_fifo1 <= valid_in ;
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in = 30 then
+            elsif counter_in = N-2 then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in < 62 then
+            elsif counter_in < N+N-2 then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 wr_fifo2 <= valid_in;
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in = 62 then
+            elsif counter_in = N+N-2 then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 wr_fifo2 <= valid_in;
@@ -148,7 +151,7 @@ process (clk, new_image) begin
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in < 94 then
+            elsif counter_in < N+N+N-2 then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 wr_fifo2 <= valid_in;
@@ -157,7 +160,7 @@ process (clk, new_image) begin
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-            elsif counter_in <= 1024 then
+            elsif counter_in <= N*N then
                 wr_fifo1 <= valid_in;
                 rd_fifo1 <= valid_in;
                 wr_fifo2 <= valid_in;
@@ -170,7 +173,7 @@ process (clk, new_image) begin
                 if valid_in = '1' then 
                     counter_in <= counter_in + 1;
                 end if;
-                if counter_in = 1024 then 
+                if counter_in = N*N then 
                     counter_in <= (others=>'0');
                     new_image_came <= '0';
                     wr_fifo1 <= '0';
@@ -179,7 +182,7 @@ process (clk, new_image) begin
         end if;
     end if;
     
-    if counter_out_fifo3 = 1024 then 
+    if counter_out_fifo3 = N*N then 
         counter_out_fifo3 <= (others => '0');
         --new_image_came <= '0';
         --wr_fifo1 <= '0';
@@ -188,21 +191,21 @@ process (clk, new_image) begin
         --rd_fifo2 <= '0';
         --wr_fifo3 <= '0';
         rd_fifo3 <= '0';
-    elsif counter_out_fifo3 > (1024-31) then --31 stin 3h fifo
+    elsif counter_out_fifo3 > (N*N-(N-1)) then --31 stin 3h fifo
         rd_fifo3 <= '1';
         rd_fifo2 <= '0';
         wr_fifo3 <= '0';
         if (rising_edge(clk)) then 
             counter_out_fifo3 <= counter_out_fifo3 + 1;
         end if;
-    elsif counter_out_fifo3 > (1024-63) then --31 stin 3h fifo kai 31 stin 2h fifo
+    elsif counter_out_fifo3 > (N*N-(N+N-1)) then --31 stin 3h fifo kai 31 stin 2h fifo
         rd_fifo1 <= '0';
         rd_fifo2 <= '1';
         wr_fifo2 <= '0';
         if (rising_edge(clk)) then 
             counter_out_fifo3 <= counter_out_fifo3 + 1;
         end if;
-    elsif counter_out_fifo3 > (1024-96) then --31 stin 3h fifo kai 31 stin 2h fifo kai 31 sthn 1h
+    elsif counter_out_fifo3 > N*N-(N+N+N-1) then --31 stin 3h fifo kai 31 stin 2h fifo kai 31 sthn 1h
         rd_fifo1 <= '1';
         if (rising_edge(clk)) then 
             counter_out_fifo3 <= counter_out_fifo3 + 1;

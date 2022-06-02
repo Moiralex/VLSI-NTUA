@@ -18,8 +18,8 @@ begin
         variable tmp1,tmp2,tmp3: std_logic_vector (9 downto 0);
         begin
             tmp1 := ("00"&A)+("00"&B);
-            tmp2 := tmp1+C;
-            tmp3 := tmp2+D;
+            tmp2 := tmp1+("00"&C);
+            tmp3 := tmp2+("00"&D);
             mean<= tmp3(9 downto 2);  --divide by 4
     end process;
 end adder_arch;
