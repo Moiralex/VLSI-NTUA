@@ -28,6 +28,7 @@ architecture Behavioral of main_node is
             input : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
             new_image : IN STD_LOGIC;
             full : out STD_LOGIC;
+            early_valid: out STD_LOGIC;
             reg_output_1_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_1_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_1_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -96,6 +97,13 @@ architecture Behavioral of main_node is
                valid_out : out STD_LOGIC);
     end component;
     
+    component reg_1bit is
+    Port ( D : in STD_LOGIC;
+           clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           Q : out STD_LOGIC);
+    end component;
+    
     signal early_valid, first_col, last_col, new_line, first_row, last_row : std_logic;
     signal states : std_logic_vector(1 downto 0);
     signal output_reg_1_1, output_reg_1_2,  output_reg_1_3, output_reg_2_1, output_reg_2_2, 
@@ -103,14 +111,14 @@ architecture Behavioral of main_node is
 
 begin
 
-valid_generator2: valid_generator
-        generic map (N => "000000100000")
-        Port map(clk => clk,
-               rst => rst,
-               valid_in => valid_in,
-               rd_check => open,
-               early_valid => early_valid,
-               valid_out => valid_out);
+--valid_generator2: valid_generator
+--        generic map (N => "000000100000")
+--        Port map(clk => clk,
+--               rst => rst,
+--               valid_in => valid_in,
+--               rd_check => open,
+--              early_valid => early_valid,
+--               valid_out => valid_out);
 
 sync:  synchronizer 
         generic map (
@@ -139,6 +147,7 @@ fifo: fifo_with_registers
             input => input,
             new_image => new_image,
             full => open,
+            early_valid => early_valid,
             reg_output_1_1 => output_reg_1_1,
             reg_output_1_2 => output_reg_1_2,
             reg_output_1_3 => output_reg_1_3,
@@ -172,6 +181,8 @@ comp: computation_module
                red => red,
                green => green,
                blue => blue);
+
+valid_out_reg: reg_1bit port map(D => early_valid, clk => clk, rst => rst, Q => valid_out);
 
 next_state <= states;
 end Behavioral;

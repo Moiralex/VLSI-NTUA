@@ -32,6 +32,7 @@ entity fifo_with_registers is
         input : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
         new_image : IN STD_LOGIC;
         full : out STD_LOGIC;
+        early_valid: out STD_LOGIC;
         reg_output_1_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_1_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_1_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -84,7 +85,7 @@ architecture Behavioral of fifo_with_registers is
     signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
-    signal not_rst: std_logic;
+    signal not_rst, pre_early_valid: std_logic;
     signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic;
     signal rd_fifo1, rd_fifo2, rd_fifo3 : std_logic;
     signal valid_fifo1, valid_fifo2, valid_fifo3 : std_logic;
@@ -92,6 +93,7 @@ architecture Behavioral of fifo_with_registers is
     signal dontcare1, dontcare2, dontcare3, dontcare4, dontcare5, dontcare6 :std_logic;
     signal valid_reg2, valid_reg3, valid_reg5, valid_reg6, valid_reg8, valid_reg9: std_logic;
     signal new_image_came : std_logic := '0';
+    signal all_data_read: std_logic:='0';
     signal second_image_counter : std_logic_vector(10 downto 0) := (others=>'0');
 begin
 
@@ -129,8 +131,17 @@ reg_output_3_2 <= output_reg_3_2;
 full <= full_fifo2;
 not_rst <= not rst;
 
-process (clk, new_image) begin
-    if rst = '1' then 
+pre_early_valid <= (rd_fifo2 and valid_reg5) or all_data_read;
+early_valid_reg: reg_1bit port map (D=>pre_early_valid, clk => clk, rst => rst, Q => early_valid);
+
+process (clk, rst, new_image) begin
+    if rst ='0' then
+        second_image_counter <= (others => '0');
+        new_image_came <= '0';
+        all_data_read <= '0';
+        counter_in <= (others => '0');
+        
+    elsif rst = '1' then 
         if new_image = '1' then
             new_image_came <= '1';
             wr_fifo1 <= valid_in ;
@@ -192,6 +203,7 @@ process (clk, new_image) begin
                     if counter_in = N*N-1 then --in order to become true when the counter has reached N*N
                         --counter_in <= (others=>'0');
                         new_image_came <= '0';
+                        all_data_read <= '1';
                         wr_fifo1 <= '0';
                     end if;
                 end if;
@@ -235,7 +247,7 @@ process (clk, new_image) begin
                     if valid_in = '1' then 
                         second_image_counter <= second_image_counter + 1;
                     end if;
-                elsif counter_in = (N*N+N+N-2) then
+                elsif counter_in = (N*N+N+N-2) or counter_in = (N*N+N+N-1) then
                     wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
@@ -243,6 +255,18 @@ process (clk, new_image) begin
                     wr_fifo3 <= '1';
                     rd_fifo3 <= '1';
                     counter_in <= counter_in + 1;
+                    if valid_in = '1' then 
+                        second_image_counter <= second_image_counter + 1;
+                    end if;
+                elsif counter_in = (N*N+N+N) then
+                    wr_fifo1 <= '0' or valid_in;
+                    rd_fifo1 <= '0' or valid_in;
+                    wr_fifo2 <= '0' or valid_in;
+                    rd_fifo2 <= '0' or valid_in;
+                    wr_fifo3 <= '1';
+                    rd_fifo3 <= '1';
+                    counter_in <= counter_in + 1;
+                    all_data_read <= '0';
                     if valid_in = '1' then 
                         second_image_counter <= second_image_counter + 1;
                     end if;
