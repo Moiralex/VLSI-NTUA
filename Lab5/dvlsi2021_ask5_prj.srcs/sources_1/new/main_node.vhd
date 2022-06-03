@@ -14,6 +14,7 @@ entity main_node is
         green : out std_logic_vector(7 downto 0);
         --debug
         next_state: out std_logic_vector(1 downto 0);
+        counter_in : inout std_logic_vector(10 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node;
@@ -147,7 +148,7 @@ fifo: fifo_with_registers
             reg_output_3_1 => output_reg_3_1,
             reg_output_3_2 => output_reg_3_2,
             reg_output_3_3 => output_reg_3_3,
-            counter_in => open,
+            counter_in => counter_in,
             counter_out_fifo3 => open,
             output_first_fifo => open ); 
             
