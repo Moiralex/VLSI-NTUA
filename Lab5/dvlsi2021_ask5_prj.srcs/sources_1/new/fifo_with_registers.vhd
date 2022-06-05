@@ -85,13 +85,13 @@ architecture Behavioral of fifo_with_registers is
     signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
-    signal not_rst, pre_early_valid: std_logic;
+    signal not_rst, mid_data_valid, pre_early_valid: std_logic;
     signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic;
     signal rd_fifo1, rd_fifo2, rd_fifo3 : std_logic;
     signal valid_fifo1, valid_fifo2, valid_fifo3 : std_logic;
     signal full_fifo1, full_fifo2, full_fifo3 : std_logic;
     signal dontcare1, dontcare2, dontcare3, dontcare4, dontcare5, dontcare6 :std_logic;
-    signal valid_reg2, valid_reg3, valid_reg5, valid_reg6, valid_reg8, valid_reg9: std_logic;
+    signal valid_reg1, valid_reg2, valid_reg3, valid_reg4, valid_reg5, valid_reg6, valid_reg7, valid_reg8, valid_reg9: std_logic;
     signal new_image_came : std_logic := '0';
     signal all_data_read: std_logic:='0';
     signal second_image_counter : std_logic_vector(10 downto 0) := (others=>'0');
@@ -103,23 +103,35 @@ fifo_second_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>outp
                  full=>full_fifo2, almost_full=>dontcare3, empty=>dontcare4, valid=>valid_fifo2);
 fifo_third_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>output_second_fifo, wr_en=>wr_fifo3, rd_en=>rd_fifo3, dout=>output_third_fifo, 
                  full=>full_fifo3, almost_full=>dontcare5, empty=>dontcare6,  valid=>valid_fifo3);
+
+--anti gia valid_in evala valid_fifo
+valid_reg1 <= valid_fifo1 or all_data_read;               
+valid_reg2 <= valid_fifo1 or all_data_read;
+valid_reg3 <= valid_fifo1 or all_data_read;
+valid_reg4 <= valid_fifo2 or all_data_read;
+valid_reg5 <= valid_fifo2 or all_data_read;
+valid_reg6 <= valid_fifo2 or all_data_read;
+valid_reg7 <= valid_fifo3 or all_data_read;
+valid_reg8 <= valid_fifo3 or all_data_read;
+valid_reg9 <= valid_fifo3 or all_data_read;
                  
-first_line_first_reg:  reg_clk_and_valid_in port map (D=>output_first_fifo, clk=>clk, valid_in=>valid_fifo1, rst=>rst, Q=>output_reg_1_1);
-second_reg_valid: reg_1bit port map (D=>valid_fifo1, clk => clk, rst => rst, Q => valid_reg2);
+first_line_first_reg:  reg_clk_and_valid_in port map (D=>output_first_fifo, clk=>clk, valid_in=>valid_reg1, rst=>rst, Q=>output_reg_1_1);
+--second_reg_valid: reg_1bit port map (D=>valid_fifo1, clk => clk, rst => rst, Q => valid_reg2);
 first_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_1, clk=>clk, valid_in=>valid_reg2, rst=>rst, Q=>output_reg_1_2);
-third_reg_valid: reg_1bit port map (D=>valid_reg2, clk => clk, rst => rst, Q => valid_reg3);
+--third_reg_valid: reg_1bit port map (D=>valid_reg2, clk => clk, rst => rst, Q => valid_reg3);
 first_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_2, clk=>clk, valid_in=>valid_reg3, rst=>rst, Q=>reg_output_1_3);
 
-second_line_first_reg:  reg_clk_and_valid_in port map (D=>output_second_fifo, clk=>clk, valid_in=>valid_fifo2, rst=>rst, Q=>output_reg_2_1);
-fifth_reg_valid: reg_1bit port map (D=>valid_fifo2, clk => clk, rst => rst, Q => valid_reg5);
+second_line_first_reg:  reg_clk_and_valid_in port map (D=>output_second_fifo, clk=>clk, valid_in=>valid_reg4, rst=>rst, Q=>output_reg_2_1);
+--fifth_reg_valid: reg_1bit port map (D=>valid_fifo2, clk => clk, rst => rst, Q => valid_reg5);
+mid_data_reg_valid: reg_1bit port map (D=>valid_fifo2, clk => clk, rst => rst, Q => mid_data_valid);
 second_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_1, clk=>clk, valid_in=>valid_reg5, rst=>rst, Q=>output_reg_2_2);
-sixth_reg_valid: reg_1bit port map (D=>valid_reg5, clk => clk, rst => rst, Q => valid_reg6);
+--sixth_reg_valid: reg_1bit port map (D=>valid_reg5, clk => clk, rst => rst, Q => valid_reg6);
 second_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_2, clk=>clk, valid_in=>valid_reg6, rst=>rst, Q=>reg_output_2_3);
 
-third_line_first_reg:  reg_clk_and_valid_in port map (D=>output_third_fifo, clk=>clk, valid_in=>valid_fifo3, rst=>rst, Q=>output_reg_3_1);
-eigth_reg_valid: reg_1bit port map (D=>valid_fifo3, clk => clk, rst => rst, Q => valid_reg8);
+third_line_first_reg:  reg_clk_and_valid_in port map (D=>output_third_fifo, clk=>clk, valid_in=>valid_reg7, rst=>rst, Q=>output_reg_3_1);
+--eigth_reg_valid: reg_1bit port map (D=>valid_fifo3, clk => clk, rst => rst, Q => valid_reg8);
 third_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_1, clk=>clk, valid_in=>valid_reg8, rst=>rst, Q=>output_reg_3_2);
-nineth_reg_valid: reg_1bit port map (D=>valid_reg8, clk => clk, rst => rst, Q => valid_reg9);
+--nineth_reg_valid: reg_1bit port map (D=>valid_reg8, clk => clk, rst => rst, Q => valid_reg9);
 third_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_3_2, clk=>clk, valid_in=>valid_reg9, rst=>rst, Q=>reg_output_3_3);
 
 reg_output_1_1 <= output_reg_1_1;
@@ -131,7 +143,8 @@ reg_output_3_2 <= output_reg_3_2;
 full <= full_fifo2;
 not_rst <= not rst;
 
-pre_early_valid <= (rd_fifo2 and valid_reg5) or all_data_read;
+--changed valid_reg5 to mid_data_valid
+pre_early_valid <= (rd_fifo2 and mid_data_valid) or all_data_read;
 early_valid_reg: reg_1bit port map (D=>pre_early_valid, clk => clk, rst => rst, Q => early_valid);
 
 process (clk, rst, new_image) begin
