@@ -80,6 +80,14 @@ architecture Behavioral of fifo_with_registers is
            Q : out STD_LOGIC :='0');
     end component;
     
+    component reg_clk_and_valid_in_1bit is
+    Port ( D : in STD_LOGIC;
+           clk : in STD_LOGIC;
+           valid_in : in std_logic;
+           rst : in STD_LOGIC;
+           Q : out STD_LOGIC);
+    end component;
+    
     --signal output_first_fifo, 
     signal output_second_fifo, output_third_fifo : std_logic_vector(7 downto 0);
     signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
@@ -123,7 +131,7 @@ first_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_1_2, clk=>cl
 
 second_line_first_reg:  reg_clk_and_valid_in port map (D=>output_second_fifo, clk=>clk, valid_in=>valid_reg4, rst=>rst, Q=>output_reg_2_1);
 --fifth_reg_valid: reg_1bit port map (D=>valid_fifo2, clk => clk, rst => rst, Q => valid_reg5);
-mid_data_reg_valid: reg_1bit port map (D=>valid_fifo2, clk => clk, rst => rst, Q => mid_data_valid);
+mid_data_reg_valid: reg_clk_and_valid_in_1bit port map (D=>valid_fifo2, clk => clk, valid_in => valid_fifo2, rst => rst, Q => mid_data_valid);
 second_line_second_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_1, clk=>clk, valid_in=>valid_reg5, rst=>rst, Q=>output_reg_2_2);
 --sixth_reg_valid: reg_1bit port map (D=>valid_reg5, clk => clk, rst => rst, Q => valid_reg6);
 second_line_third_reg:  reg_clk_and_valid_in port map (D=>output_reg_2_2, clk=>clk, valid_in=>valid_reg6, rst=>rst, Q=>reg_output_2_3);
@@ -144,7 +152,7 @@ full <= full_fifo2;
 not_rst <= not rst;
 
 --changed valid_reg5 to mid_data_valid
-pre_early_valid <= (rd_fifo2 and mid_data_valid) or all_data_read;
+pre_early_valid <= (valid_fifo2 and mid_data_valid) or all_data_read;
 early_valid_reg: reg_1bit port map (D=>pre_early_valid, clk => clk, rst => rst, Q => early_valid);
 
 process (clk, rst, new_image) begin
