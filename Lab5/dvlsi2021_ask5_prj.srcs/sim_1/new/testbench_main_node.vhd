@@ -88,7 +88,15 @@ begin
                 wait for clk1_period/2;
         new_image <= '0';
     
-        for i in 1 to 1023 loop
+        --for i in 1 to 1023 loop
+        --    readline(test_file, row);
+        --    read(row, v_data_read);
+        --    input_read <= std_logic_vector(to_unsigned(v_data_read, 8));
+        --    wait for clk1_period/2;
+        --        clk_counter <= clk_counter + 1;
+        --        wait for clk1_period/2;
+        --end loop;
+        for i in 1 to 512 loop
             readline(test_file, row);
             read(row, v_data_read);
             input_read <= std_logic_vector(to_unsigned(v_data_read, 8));
@@ -98,6 +106,22 @@ begin
         end loop;
         
         valid_in <= '0'; 
+        for i in 0 to 20 loop
+            wait for clk1_period;
+        end loop;
+        
+        valid_in <= '1';
+        for i in 513 to 1023 loop
+            readline(test_file, row);
+            read(row, v_data_read);
+            input_read <= std_logic_vector(to_unsigned(v_data_read, 8));
+            wait for clk1_period/2;
+            clk_counter <= clk_counter + 1;
+            wait for clk1_period/2;
+        end loop;
+        
+        valid_in <= '0';
+        
         wait; 
         
             

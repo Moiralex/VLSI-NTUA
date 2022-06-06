@@ -101,11 +101,9 @@ uut : fifo_with_registers
         new_image <= '0';
         
         for i in 0 to 512 loop
-            --wr_en_test <= '1';
+            valid_in <= '1';
             input <= input + 1;
             wait for clk1_period;
-            --wr_en_test <= '0';
-            --wait for 2*clk1_period;
         end loop;
         
         for i in 0 to 20 loop
