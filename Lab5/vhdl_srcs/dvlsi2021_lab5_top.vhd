@@ -113,7 +113,7 @@ architecture arch of dvlsi2021_lab5_top is
   signal tmp_tkeep  : std_logic_vector(0 downto 0);
   signal tmp_tlast  : std_logic;
   signal tmp_tready : std_logic;
-  signal tmp_tvalid, tmp_valid_reg, valid_out, image_finished, new_image: std_logic;
+  signal tmp_tvalid, tmp_valid_reg, tmp_valid_reg2, valid_out, image_finished, new_image_tmp, new_image: std_logic;
   signal rst, not_prev_valid: std_logic;
   signal tdata_output : std_logic_vector(31 downto 0);
 
@@ -172,13 +172,16 @@ valid_delay_reg: reg_1bit port map (D=>tmp_tvalid, clk => aclk, rst => rst, Q =>
 input_delay_reg: reg_8bit port map (D=>tmp_tdata, clk => aclk, rst => rst, Q => tmp_data_reg);
 
 not_prev_valid <= not tmp_valid_reg;
-new_image <= not_prev_valid and tmp_tvalid;
+new_image_tmp <= not_prev_valid and tmp_tvalid;
+
+new_image_reg: reg_1bit port map (D=>new_image_tmp, clk => aclk, rst => rst, Q => new_image);
+valid_delay_reg_for_valid_in: reg_1bit port map (D=>tmp_tvalid, clk => aclk, rst => rst, Q => tmp_valid_reg2);
 
      main_node_instance: main_node
       generic map(N => "000000100000")
       Port map (clk => aclk,
             rst => rst,
-            valid_in =>tmp_valid_reg,
+            valid_in =>tmp_valid_reg2,
             new_image => new_image,
             input =>tmp_data_reg,
             red => red,
