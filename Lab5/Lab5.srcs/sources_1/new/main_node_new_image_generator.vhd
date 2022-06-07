@@ -105,7 +105,7 @@ begin
 --tdata_output <= "00000000" & red & green & blue;
 valid_delay_reg1: reg_1bit port map (D=>tmp_tvalid, clk => clk, rst => rst, Q => tmp_valid_reg1);
 
-input_delay_reg1: reg_8bit port map (D=>tmp_tdata, clk => clk, rst => rst, Q => tmp_data_reg1);
+input_delay_reg1: reg_8bit port map (D=>input, clk => clk, rst => rst, Q => tmp_data_reg1);
 
 not_prev_valid <= not tmp_valid_reg1;
 new_image_tmp <= not_prev_valid and tmp_tvalid;
