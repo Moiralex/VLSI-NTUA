@@ -19,12 +19,15 @@
 
 #define TX_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x08000000) // 0 + 128MByte
 #define RX_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x10000000) // 0 + 256MByte
+#define RED_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18000000) //0 + 384Mbyte
+#define GREEN_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18200000) //0 + 386Mbyte
+#define BLUE_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18400000) //0 + 388Mbyte
 
 /* User application global variables & defines */
 static int CheckData(void);
 
 AAxiDma AxiDma_RX, AxiDma_TX;
-u8 Green[N*N], Blue[N*N], Red[N*N]; 
+//u8 Green[N*N], Blue[N*N], Red[N*N]; 
 
 int main()
 {
@@ -92,7 +95,7 @@ int main()
 
 
     for(Index = 0; Index < N*N; Index ++) {
-            TxBufferPtr[Index] = Index % 256;
+            TxBufferPtr[Index] = Index % N;
     }
 
     XTime_GetTime(&preExecCyclesFPGA);
@@ -136,6 +139,9 @@ int main()
                 UpLeft = 0;
                 Left = 0;
                 DownLeft = 0;
+				Right = TxBufferPtr[i*N+j+1];
+            	DownRight = TxBufferPtr[(i+1)*N+j+1];
+            	DownMiddle = TxBufferPtr[(i+1)*N+j];
             }
             else if(i==0){
                 UpRight = 0;
@@ -143,6 +149,9 @@ int main()
                 UpLeft = 0;
                 Left = TxBufferPtr[i*N+j-1];
                 DownLeft = TxBufferPtr[(i+1)*N+j-1];
+				Right = TxBufferPtr[i*N+j+1];
+            	DownRight = TxBufferPtr[(i+1)*N+j+1];
+           		DownMiddle = TxBufferPtr[(i+1)*N+j];
             }
             else if(j==0){
                 UpRight = TxBufferPtr[(i-1)*N+j+1];
@@ -150,40 +159,76 @@ int main()
                 UpLeft = 0;
                 Left = 0;
                 DownLeft = 0;
+				Right = TxBufferPtr[i*N+j+1];
+            	DownRight = TxBufferPtr[(i+1)*N+j+1];
+            	DownMiddle = TxBufferPtr[(i+1)*N+j];
             }
+			else if (i==N-1 && j=N-1) {
+				UpRight = 0;
+                UpMiddle = TxBufferPtr[(i-1)*N+j];
+                UpLeft = TxBufferPtr[(i-1)*N+j-1];
+                Left = TxBufferPtr[i*N+j-1];
+                DownLeft = 0;
+				Right = 0;
+            	DownRight = 0;
+            	DownMiddle = 0;
+			}
+			else if (i==N-1) {
+				UpRight = TxBufferPtr[(i-1)*N+j+1];
+                UpMiddle = TxBufferPtr[(i-1)*N+j];
+                UpLeft = TxBufferPtr[(i-1)*N+j-1];
+                Left = TxBufferPtr[i*N+j-1];
+                DownLeft = 0;
+				Right = TxBufferPtr[i*N+j+1];
+            	DownRight = 0;
+            	DownMiddle = 0;
+			}
+			else if (j==N-1) {
+				UpRight = 0;
+                UpMiddle = TxBufferPtr[(i-1)*N+j];
+                UpLeft = TxBufferPtr[(i-1)*N+j-1];
+                Left = TxBufferPtr[i*N+j-1];
+                DownLeft = TxBufferPtr[(i+1)*N+j-1];
+				Right = 0;
+            	DownRight = 0;
+            	DownMiddle = TxBufferPtr[(i+1)*N+j];
+			}
             else{
                 UpRight = TxBufferPtr[(i-1)*N+j+1];
                 UpMiddle = TxBufferPtr[(i-1)*N+j];
                 UpLeft = TxBufferPtr[(i-1)*N+j-1];
                 Left = TxBufferPtr[i*N+j-1];
                 DownLeft = TxBufferPtr[(i+1)*N+j-1];
+				Right = TxBufferPtr[i*N+j+1];
+            	DownRight = TxBufferPtr[(i+1)*N+j+1];
+            	DownMiddle = TxBufferPtr[(i+1)*N+j];
             }
-            Right = TxBufferPtr[i*N+j+1];
-            DownRight = TxBufferPtr[(i+1)*N+j+1];
-            DownMiddle = TxBufferPtr[(i+1)*N+j];
+            //Right = TxBufferPtr[i*N+j+1];
+            //DownRight = TxBufferPtr[(i+1)*N+j+1];
+            //DownMiddle = TxBufferPtr[(i+1)*N+j];
 
             if(line_odd_even == 0){ //grammes 0,2,...(green and blue)
                 if(pixel_odd_even == 0){ //green
-                    Green[i*N+j] = TxBufferPtr[i*N+j];
+                    GREEN_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
                     Blue[i*N+j] = (Left + Right)/2;
-                    Red[i*N+j] = (UpMiddle + DownMiddle)/2;
+                    RED_BUFFER[i*N+j] = (UpMiddle + DownMiddle)/2;
                 }
                 else{   //blue
-                    Green[i*N+j] = (Left + Right + UpMiddle + DownMiddle)/4;
-                    Blue[i*N+j] = TxBufferPtr[i*N+j];
-                    Red[i*N+j] = (UpLeft + UpRight + DownLeft + DownRight)/4;
+                    GREEN_BUFFER[i*N+j] = (Left + Right + UpMiddle + DownMiddle)/4;
+                    BLUE_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
+                    RED_BUFFER[i*N+j] = (UpLeft + UpRight + DownLeft + DownRight)/4;
                 }
             }
             else{   //grammes 1,3,...(green and red)
                 if(pixel_odd_even == 0){ //red
-                    Green[i*N+j] = (Left + Right + UpMiddle + DownMiddle)/4;
-                    Blue[i*N+j] = (UpLeft + UpRight + DownLeft + DownRight)/4;
-                    Red[i*N+j] = TxBufferPtr[i*N+j];
+                    GREEN_BUFFER[i*N+j] = (Left + Right + UpMiddle + DownMiddle)/4;
+                    BLUE_BUFFER[i*N+j] = (UpLeft + UpRight + DownLeft + DownRight)/4;
+                    RED_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
                 } 
                 else{ //green
-                    Green[i*N+j] = TxBufferPtr[i*N+j];
-                    Blue[i*N+j] = (UpMiddle + DownMiddle)/2;
-                    Red[i*N+j] = (Left + Right)/2;
+                    GREEN_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
+                    BLUE_BUFFER[i*N+j] = (UpMiddle + DownMiddle)/2;
+                    RED_BUFFER[i*N+j] = (Left + Right)/2;
                 }
             }
             pixel_odd_even = (pixel_odd_even + 1)%2;
@@ -225,7 +270,7 @@ static int CheckData(void)
         Value_Blue = RxPacket[Index] & 0xFF;
         Value_Green = (RxPacket[Index] >> 8) & 0xFF;
         Value_Red = (RxPacket[Index] >> 16) & 0xFF; 
-        if ((Blue[Index] != Value_Blue) || (Green[Index] != Value_Green) || (Red[Index] != Value_Red)) {
+        if ((BLUE_BUFFER[Index] != Value_Blue) || (GREEN_BUFFER[Index] != Value_Green) || (RED_BUFFER[Index] != Value_Red)) {
             xil_printf("Data error %d: %x/%x\r\n",
             Index, (unsigned int)RxPacket[Index],
                 (unsigned int)Value_Blue);
