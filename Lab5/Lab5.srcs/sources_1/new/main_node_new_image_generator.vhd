@@ -43,7 +43,7 @@ entity main_node_new_image_generator is
         green_test : out std_logic_vector(7 downto 0);
         blue_test : out std_logic_vector(7 downto 0);
         next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(10 downto 0);
+        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node_new_image_generator;
@@ -60,7 +60,7 @@ component main_node is
             blue : out std_logic_vector(7 downto 0);
             --debug
             next_state: out std_logic_vector(1 downto 0);
-            counter_in : inout std_logic_vector(10 downto 0);
+            counter_in : inout std_logic_vector(20 downto 0);
             --debug
             valid_out, image_finished : out std_logic);
     end component;
@@ -102,7 +102,7 @@ component main_node is
     signal tdata_output_tmp : std_logic_vector(31 downto 0);
 
 begin
---tdata_output <= "00000000" & red & green & blue;
+tdata_output <= "00000000" & red & green & blue;
 valid_delay_reg1: reg_1bit port map (D=>tmp_tvalid, clk => clk, rst => rst, Q => tmp_valid_reg1);
 
 input_delay_reg1: reg_8bit port map (D=>input, clk => clk, rst => rst, Q => tmp_data_reg1);
@@ -120,15 +120,15 @@ new_image_test <= new_image;
 valid_in_test <= valid_in;
 
 main_node_instance: main_node
-      --generic map(N => "000000100000")
+      generic map(N => N)
       Port map (clk => clk,
             rst => rst,
             valid_in => valid_in,
             new_image => new_image,
             input =>tmp_data_reg1,
-            red => red_test,
-            green =>green_test,
-            blue =>blue_test,
+            red => red,
+            green =>green,
+            blue =>blue,
             --debug
             next_state => next_state,
             counter_in => counter_in,
@@ -136,7 +136,7 @@ main_node_instance: main_node
             valid_out =>valid_out, 
             image_finished =>image_finished );
 
---red_test <= red;
---green_test <= green;
---blue_test <= blue;
+red_test <= red;
+green_test <= green;
+blue_test <= blue;
 end Structural;
