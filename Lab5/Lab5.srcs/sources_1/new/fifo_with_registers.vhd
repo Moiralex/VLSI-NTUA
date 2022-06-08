@@ -42,7 +42,7 @@ entity fifo_with_registers is
         reg_output_3_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        counter_in : inout std_logic_vector(10 downto 0) := (others=>'0'); 
+        counter_in : inout std_logic_vector(20 downto 0) := (others=>'0'); 
         counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');        
         output_first_fifo : inout std_logic_vector(7 downto 0)
       );
@@ -94,15 +94,15 @@ architecture Behavioral of fifo_with_registers is
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
     signal not_rst, mid_data_valid, pre_early_valid: std_logic;
-    signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic;
-    signal rd_fifo1, rd_fifo2, rd_fifo3 : std_logic;
+    signal wr_fifo1, wr_fifo2, wr_fifo3 : std_logic := '0';
+    signal rd_fifo1, rd_fifo2, rd_fifo3 : std_logic := '0';
     signal valid_fifo1, valid_fifo2, valid_fifo3 : std_logic;
     signal full_fifo1, full_fifo2, full_fifo3 : std_logic;
     signal dontcare1, dontcare2, dontcare3, dontcare4, dontcare5, dontcare6 :std_logic;
     signal valid_reg1, valid_reg2, valid_reg3, valid_reg4, valid_reg5, valid_reg6, valid_reg7, valid_reg8, valid_reg9: std_logic;
     signal new_image_came : std_logic := '0';
     signal all_data_read: std_logic:='0';
-    signal second_image_counter : std_logic_vector(10 downto 0) := (others=>'0');
+    signal second_image_counter : std_logic_vector(20 downto 0) := (others=>'0');
 begin
 
 fifo_first_line: fifo_generator_1 port map (clk=>clk,  srst=>not_rst, din=>input, wr_en=>wr_fifo1, rd_en =>rd_fifo1, dout => output_first_fifo,
@@ -165,7 +165,7 @@ process (clk, rst, new_image) begin
     elsif rst = '1' then 
         if new_image = '1' then
             new_image_came <= '1';
-            wr_fifo1 <= valid_in ;
+            wr_fifo1 <= valid_in;
             --if valid_in = '1' then 
               --  counter_in <= counter_in + 1;
             --end if;

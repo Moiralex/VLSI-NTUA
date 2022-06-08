@@ -15,7 +15,7 @@ entity main_node is
         green : out std_logic_vector(7 downto 0);
         --debug
         next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(10 downto 0);
+        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node;
@@ -39,7 +39,7 @@ architecture Behavioral of main_node is
             reg_output_3_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-            counter_in : inout std_logic_vector(10 downto 0) := (others=>'0'); 
+            counter_in : inout std_logic_vector(20 downto 0) := (others=>'0'); 
             counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');
             output_first_fifo : inout std_logic_vector(7 downto 0)
           );
