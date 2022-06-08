@@ -19,15 +19,15 @@
 
 #define TX_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x08000000) // 0 + 128MByte
 #define RX_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x10000000) // 0 + 256MByte
-#define RED_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18000000) //0 + 384Mbyte
-#define GREEN_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18200000) //0 + 386Mbyte
-#define BLUE_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18400000) //0 + 388Mbyte
+//#define RED_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18000000) //0 + 384Mbyte
+//#define GREEN_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18200000) //0 + 386Mbyte
+//#define BLUE_BUFFER (XPAR_DDR_MEM_BASEADDR + 0x18400000) //0 + 388Mbyte
 
 /* User application global variables & defines */
 static int CheckData(void);
 
-AAxiDma AxiDma_RX, AxiDma_TX;
-//u8 Green[N*N], Blue[N*N], Red[N*N]; 
+XAxiDma AxiDma_RX, AxiDma_TX;
+u8 GREEN_BUFFER[MAX_PKT_LEN], BLUE_BUFFER[MAX_PKT_LEN], RED_BUFFER[MAX_PKT_LEN];
 
 int main()
 {
@@ -39,19 +39,19 @@ int main()
     XTime postExecCyclesSW = 0;
 
     print("HELLO 1\r\n");
-    XAxiDma_Config *CfgPtrRX;
-    XAxiDma_Config *CfgPtrTX;
-    int Status;
+    XAxiDma_Config *CfgPtr_RX;
+    XAxiDma_Config *CfgPtr_TX;
+    int Status, i, j;
     int Tries = NUMBER_OF_TRANSFERS;
 
     int Index, line_odd_even, pixel_odd_even;
-    //u8 Green[N*N], Blue[N*N], Red[N*N]; 
+    //u8 Green[N*N], Blue[N*N], Red[N*N];
     u8 UpRight, UpMiddle, UpLeft, Left, Right, DownRight, DownMiddle, DownLeft;
     u8 *TxBufferPtr;
     u8 *RxBufferPtr;
 
-    TxBufferPtr = (u8 *)TX_BUFFER_BASE ;
-    RxBufferPtr = (u8 *)RX_BUFFER_BASE;
+    TxBufferPtr = (u8 *)TX_BUFFER ;
+    RxBufferPtr = (u8 *)RX_BUFFER;
 
     init_platform();
 
@@ -87,7 +87,7 @@ int main()
                         XAXIDMA_DEVICE_TO_DMA);
     XAxiDma_IntrDisable(&AxiDma_TX, XAXIDMA_IRQ_ALL_MASK,
                         XAXIDMA_DMA_TO_DEVICE);
-                        
+
     XAxiDma_IntrDisable(&AxiDma_RX, XAXIDMA_IRQ_ALL_MASK,
                         XAXIDMA_DEVICE_TO_DMA);
     XAxiDma_IntrDisable(&AxiDma_RX, XAXIDMA_IRQ_ALL_MASK,
@@ -130,7 +130,7 @@ int main()
     XTime_GetTime(&postExecCyclesFPGA);
 
     XTime_GetTime(&preExecCyclesSW);
-    
+
     for(i=0; i < N; i++){
         for(j=0; j < N; j++){
             if(i==0 && j==0){
@@ -163,7 +163,7 @@ int main()
             	DownRight = TxBufferPtr[(i+1)*N+j+1];
             	DownMiddle = TxBufferPtr[(i+1)*N+j];
             }
-			else if (i==N-1 && j=N-1) {
+			else if ((i==N-1) && (j=N-1)) {
 				UpRight = 0;
                 UpMiddle = TxBufferPtr[(i-1)*N+j];
                 UpLeft = TxBufferPtr[(i-1)*N+j-1];
@@ -210,7 +210,7 @@ int main()
             if(line_odd_even == 0){ //grammes 0,2,...(green and blue)
                 if(pixel_odd_even == 0){ //green
                     GREEN_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
-                    Blue[i*N+j] = (Left + Right)/2;
+                    BLUE_BUFFER[i*N+j] = (Left + Right)/2;
                     RED_BUFFER[i*N+j] = (UpMiddle + DownMiddle)/2;
                 }
                 else{   //blue
@@ -224,7 +224,7 @@ int main()
                     GREEN_BUFFER[i*N+j] = (Left + Right + UpMiddle + DownMiddle)/4;
                     BLUE_BUFFER[i*N+j] = (UpLeft + UpRight + DownLeft + DownRight)/4;
                     RED_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
-                } 
+                }
                 else{ //green
                     GREEN_BUFFER[i*N+j] = TxBufferPtr[i*N+j];
                     BLUE_BUFFER[i*N+j] = (UpMiddle + DownMiddle)/2;
@@ -258,7 +258,7 @@ static int CheckData(void)
     int Index = 0;
     u8 Value_Red, Value_Green, Value_Blue;
 
-    RxPacket = (u8 *) RX_BUFFER_BASE;
+    RxPacket = (u8 *) RX_BUFFER;
     //Value = TEST_START_VALUE;
 
     /* Invalidate the DestBuffer before receiving the data, in case the
@@ -269,7 +269,7 @@ static int CheckData(void)
     for(Index = 0; Index < MAX_PKT_LEN; Index++) {
         Value_Blue = RxPacket[Index] & 0xFF;
         Value_Green = (RxPacket[Index] >> 8) & 0xFF;
-        Value_Red = (RxPacket[Index] >> 16) & 0xFF; 
+        Value_Red = (RxPacket[Index] >> 16) & 0xFF;
         if ((BLUE_BUFFER[Index] != Value_Blue) || (GREEN_BUFFER[Index] != Value_Green) || (RED_BUFFER[Index] != Value_Red)) {
             xil_printf("Data error %d: %x/%x\r\n",
             Index, (unsigned int)RxPacket[Index],
