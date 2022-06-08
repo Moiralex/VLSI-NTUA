@@ -33,7 +33,7 @@ architecture Behavioral of testbench_main_node is
     constant clk1_period : time := 1 ns;
     --signal value_read: std_logic_vector(7 downto 0);
     signal clk_counter : std_logic_vector (12 downto 0) := (others => '0');
-    signal counter_in :  std_logic_vector(10 downto 0);
+    signal counter_in :  std_logic_vector(20 downto 0);
     --debug
     signal next_state: std_logic_vector(1 downto 0);
     --debug
@@ -48,7 +48,7 @@ architecture Behavioral of testbench_main_node is
             blue : out std_logic_vector(7 downto 0);
             --debug
             next_state: out std_logic_vector(1 downto 0);
-            counter_in : inout std_logic_vector(10 downto 0);
+            counter_in : inout std_logic_vector(20 downto 0);
             --debug
             valid_out, image_finished : out std_logic);
     end component;
@@ -77,6 +77,13 @@ begin
         variable row : line;
         variable v_data_read : integer;
     begin
+        valid_in <= '1';
+        new_image <= '0';
+        rst <= '1';
+        wait for clk1_period/2;
+        valid_in <= '0';
+        new_image <= '0';
+        wait for clk1_period/2;
         rst <= '1';
         readline(test_file, row);
         read(row, v_data_read);
@@ -130,9 +137,9 @@ begin
   
     
     clk1_generator: process begin
-            clk <= '0';
-            wait for clk1_period/2;
             clk <= '1';
+            wait for clk1_period/2;
+            clk <= '0';
             wait for clk1_period/2;
         end process;
 end Behavioral;
