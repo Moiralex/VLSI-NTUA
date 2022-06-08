@@ -46,7 +46,7 @@ int main()
 
     int Index, line_odd_even, pixel_odd_even;
     //u8 Green[N*N], Blue[N*N], Red[N*N];
-    u8 UpRight, UpMiddle, UpLeft, Left, Right, DownRight, DownMiddle, DownLeft;
+    int UpRight, UpMiddle, UpLeft, Left, Right, DownRight, DownMiddle, DownLeft;
     u8 *TxBufferPtr;
     u8 *RxBufferPtr;
 
