@@ -75,34 +75,51 @@ architecture arch of dvlsi2021_lab5_top is
   end component design_1_wrapper;
 
 
-    component main_node is
-      generic (N: std_logic_vector(11 downto 0) := "000000100000");
-      Port (clk : in std_logic;
-            rst, valid_in, new_image : in std_logic;
-            input : in std_logic_vector(7 downto 0);
-            red : out std_logic_vector(7 downto 0);
-            green : out std_logic_vector(7 downto 0);
-            blue : out std_logic_vector(7 downto 0);
-            --debug
-            next_state: out std_logic_vector(1 downto 0);
-            counter_in : inout std_logic_vector(10 downto 0);
-            --debug
-            valid_out, image_finished : out std_logic);
-    end component;
+--    component main_node is
+--      generic (N: std_logic_vector(11 downto 0) := "000000100000");
+--      Port (clk : in std_logic;
+--            rst, valid_in, new_image : in std_logic;
+--            input : in std_logic_vector(7 downto 0);
+--            red : out std_logic_vector(7 downto 0);
+--            green : out std_logic_vector(7 downto 0);
+--            blue : out std_logic_vector(7 downto 0);
+--            --debug
+--            next_state: out std_logic_vector(1 downto 0);
+--            counter_in : inout std_logic_vector(10 downto 0);
+--            --debug
+--            valid_out, image_finished : out std_logic);
+--    end component;
     
-    component reg_1bit is
-        Port ( D : in STD_LOGIC;
-               clk : in STD_LOGIC;
-               rst : in STD_LOGIC;
-               Q : out STD_LOGIC :='0');
-    end component;
+--    component reg_1bit is
+--        Port ( D : in STD_LOGIC;
+--               clk : in STD_LOGIC;
+--               rst : in STD_LOGIC;
+--               Q : out STD_LOGIC :='0');
+--    end component;
     
-    component reg_8bit is
-        Port ( D : in std_logic_vector(7 downto 0);
-               clk : in STD_LOGIC;
-               rst : in STD_LOGIC;
-               Q : out std_logic_vector(7 downto 0));
-    end component;
+--    component reg_8bit is
+--        Port ( D : in std_logic_vector(7 downto 0);
+--               clk : in STD_LOGIC;
+--               rst : in STD_LOGIC;
+--               Q : out std_logic_vector(7 downto 0));
+--    end component;
+
+component main_node_new_image_generator is
+    generic (N: std_logic_vector(11 downto 0) := "000000100000");
+    port(clk : in std_logic;
+        rst, tmp_tvalid: in std_logic;
+        input : in std_logic_vector(7 downto 0);
+        tdata_output : out std_logic_vector(31 downto 0);
+        --debug
+        valid_in_test, new_image_test : out std_logic;
+        red_test : out std_logic_vector(7 downto 0);
+        green_test : out std_logic_vector(7 downto 0);
+        blue_test : out std_logic_vector(7 downto 0);
+        next_state: out std_logic_vector(1 downto 0);
+        counter_in : inout std_logic_vector(20 downto 0);
+        --debug
+        valid_out, image_finished : out std_logic);
+end component;
 -------------------------------------------
 -- INTERNAL SIGNAL & COMPONENTS DECLARATION
 
@@ -113,7 +130,7 @@ architecture arch of dvlsi2021_lab5_top is
   signal tmp_tkeep  : std_logic_vector(0 downto 0);
   signal tmp_tlast  : std_logic;
   signal tmp_tready : std_logic;
-  signal tmp_tvalid, tmp_valid_reg, tmp_valid_reg2, valid_out, image_finished, new_image_tmp, new_image: std_logic;
+  signal tmp_tvalid, tmp_valid_reg, valid_out, image_finished, new_image: std_logic;
   signal rst, not_prev_valid: std_logic;
   signal tdata_output : std_logic_vector(31 downto 0);
 
@@ -166,31 +183,51 @@ begin
 ----------------------------
 -- COMPONENTS INSTANTIATIONS
 
+--rst <= aresetn(0);
+--tdata_output <= "00000000" & red & green & blue;
+--valid_delay_reg: reg_1bit port map (D=>tmp_tvalid, clk => aclk, rst => rst, Q => tmp_valid_reg);
+--input_delay_reg: reg_8bit port map (D=>tmp_tdata, clk => aclk, rst => rst, Q => tmp_data_reg);
+
+--not_prev_valid <= not tmp_valid_reg;
+--new_image <= not_prev_valid and tmp_tvalid;
+
+--     main_node_instance: main_node
+--      generic map(N => "000000100000")
+--      Port map (clk => aclk,
+--            rst => rst,
+--            valid_in =>tmp_valid_reg,
+--            new_image => new_image,
+--            input =>tmp_data_reg,
+--            red => red,
+--            green =>green,
+--            blue =>blue,
+--            --debug
+--            next_state => open,
+--            counter_in => open,
+--            --debug
+--            valid_out =>valid_out, 
+--            image_finished =>image_finished );
+
 rst <= aresetn(0);
-tdata_output <= "00000000" & red & green & blue;
-valid_delay_reg: reg_1bit port map (D=>tmp_tvalid, clk => aclk, rst => rst, Q => tmp_valid_reg);
-input_delay_reg: reg_8bit port map (D=>tmp_tdata, clk => aclk, rst => rst, Q => tmp_data_reg);
+main_node: main_node_new_image_generator
+    generic map (N => "000000100000")
+    port map (clk => aclk,
+        rst => rst,
+        tmp_tvalid => tmp_tvalid,
+        input => tmp_tdata,
+        tdata_output => tdata_output,
+        valid_in_test => open,
+        new_image_test => open,
+        red_test => open,
+        green_test => open,
+        blue_test => open,
+        next_state => open,
+        counter_in => open,       
+        
+        valid_out => valid_out,
+        image_finished => image_finished
+        );
 
-not_prev_valid <= not tmp_valid_reg;
-new_image_tmp <= not_prev_valid and tmp_tvalid;
 
-new_image_reg: reg_1bit port map (D=>new_image_tmp, clk => aclk, rst => rst, Q => new_image);
-valid_delay_reg_for_valid_in: reg_1bit port map (D=>tmp_tvalid, clk => aclk, rst => rst, Q => tmp_valid_reg2);
 
-     main_node_instance: main_node
-      generic map(N => "000000100000")
-      Port map (clk => aclk,
-            rst => rst,
-            valid_in =>tmp_valid_reg2,
-            new_image => new_image,
-            input =>tmp_data_reg,
-            red => red,
-            green =>green,
-            blue =>blue,
-            --debug
-            next_state => open,
-            counter_in => open,
-            --debug
-            valid_out =>valid_out, 
-            image_finished =>image_finished );
 end architecture; -- arch
