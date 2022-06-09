@@ -14,8 +14,8 @@ entity main_node is
         blue : out std_logic_vector(7 downto 0);
         green : out std_logic_vector(7 downto 0);
         --debug
-        next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(20 downto 0);
+--        next_state: out std_logic_vector(1 downto 0);
+--        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node;
@@ -28,7 +28,7 @@ architecture Behavioral of main_node is
             valid_in : IN STD_LOGIC;
             input : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
             new_image : IN STD_LOGIC;
-            full : out STD_LOGIC;
+            --full : out STD_LOGIC;
             early_valid: out STD_LOGIC;
             reg_output_1_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_1_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -38,10 +38,10 @@ architecture Behavioral of main_node is
             reg_output_2_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_3_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
             reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-            reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-            counter_in : inout std_logic_vector(20 downto 0) := (others=>'0'); 
-            counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');
-            output_first_fifo : inout std_logic_vector(7 downto 0)
+            reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+            --counter_in : inout std_logic_vector(20 downto 0) := (others=>'0') 
+            --counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');
+            --output_first_fifo : inout std_logic_vector(7 downto 0)
           );
     end component;
     
@@ -147,7 +147,7 @@ fifo: fifo_with_registers
             valid_in => valid_in,
             input => input,
             new_image => new_image,
-            full => open,
+            --full => open,
             early_valid => early_valid,
             reg_output_1_1 => output_reg_1_1,
             reg_output_1_2 => output_reg_1_2,
@@ -157,10 +157,11 @@ fifo: fifo_with_registers
             reg_output_2_3 => output_reg_2_3,
             reg_output_3_1 => output_reg_3_1,
             reg_output_3_2 => output_reg_3_2,
-            reg_output_3_3 => output_reg_3_3,
-            counter_in => counter_in,
-            counter_out_fifo3 => open,
-            output_first_fifo => open ); 
+            reg_output_3_3 => output_reg_3_3
+            --counter_in => counter_in,
+            --counter_out_fifo3 => open,
+            --output_first_fifo => open 
+            ); 
             
 comp: computation_module 
         Port map( clk => clk,
@@ -185,5 +186,5 @@ comp: computation_module
 
 valid_out_reg: reg_1bit port map(D => early_valid, clk => clk, rst => rst, Q => valid_out);
 
-next_state <= states;
+--next_state <= states;
 end Behavioral;

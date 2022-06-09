@@ -31,7 +31,7 @@ entity fifo_with_registers is
         valid_in : IN STD_LOGIC;
         input : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
         new_image : IN STD_LOGIC;
-        full : out STD_LOGIC;
+        --full : out STD_LOGIC;
         early_valid: out STD_LOGIC;
         reg_output_1_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_1_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
@@ -41,10 +41,10 @@ entity fifo_with_registers is
         reg_output_2_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_3_1 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
         reg_output_3_2 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0);
-        counter_in : inout std_logic_vector(20 downto 0) := (others=>'0'); 
-        counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');        
-        output_first_fifo : inout std_logic_vector(7 downto 0)
+        reg_output_3_3 : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+        --counter_in : inout std_logic_vector(20 downto 0) := (others=>'0'); 
+        --counter_out_fifo3 : inout std_logic_vector(10 downto 0) := (others=>'0');        
+        --output_first_fifo : inout std_logic_vector(7 downto 0)
       );
 end fifo_with_registers;
 
@@ -89,7 +89,7 @@ architecture Behavioral of fifo_with_registers is
     end component;
     
     --signal output_first_fifo, 
-    signal output_second_fifo, output_third_fifo : std_logic_vector(7 downto 0);
+    signal output_first_fifo, output_second_fifo, output_third_fifo : std_logic_vector(7 downto 0);
     signal output_reg_1_1,output_reg_1_2, output_reg_2_1, output_reg_2_2, output_reg_3_1, output_reg_3_2 : std_logic_vector(7 downto 0);
     --signal counter_in, counter_out : std_logic_vector(10 downto 0) := (others=>'0');
     --signal dontcare1, dontcare1, 
@@ -102,6 +102,7 @@ architecture Behavioral of fifo_with_registers is
     signal valid_reg1, valid_reg2, valid_reg3, valid_reg4, valid_reg5, valid_reg6, valid_reg7, valid_reg8, valid_reg9: std_logic;
     signal new_image_came : std_logic := '0';
     signal all_data_read: std_logic:='0';
+    signal counter_in : std_logic_vector(20 downto 0) := (others=>'0');
     signal second_image_counter : std_logic_vector(20 downto 0) := (others=>'0');
 begin
 
@@ -148,7 +149,7 @@ reg_output_2_1 <= output_reg_2_1;
 reg_output_2_2 <= output_reg_2_2;
 reg_output_3_1 <= output_reg_3_1;
 reg_output_3_2 <= output_reg_3_2;
-full <= full_fifo2;
+--full <= full_fifo2;
 not_rst <= not rst;
 
 --changed valid_reg5 to mid_data_valid
@@ -215,9 +216,9 @@ process (clk, rst, new_image) begin
                     rd_fifo2 <= valid_in;
                     wr_fifo3 <= valid_in;
                     rd_fifo3 <= valid_in;
-                    if rd_fifo3 = '1' then 
-                        counter_out_fifo3 <= counter_out_fifo3 + 1;
-                    end if;
+--                    if rd_fifo3 = '1' then 
+--                        counter_out_fifo3 <= counter_out_fifo3 + 1;
+--                    end if;
                     if valid_in = '1' then 
                         counter_in <= counter_in + 1;
                     end if;

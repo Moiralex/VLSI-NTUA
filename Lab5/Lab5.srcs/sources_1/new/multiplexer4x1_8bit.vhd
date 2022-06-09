@@ -22,8 +22,8 @@ begin
             output<=D3;
         elsif choose = "11" then
             output<=D4;
---        else
---          output <= (others => '0');
+        else
+          output <= (others => '0');
         end if;
     end process;
 end Behavioral;
