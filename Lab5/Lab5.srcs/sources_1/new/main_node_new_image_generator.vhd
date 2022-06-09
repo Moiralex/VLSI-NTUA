@@ -38,12 +38,12 @@ entity main_node_new_image_generator is
         input : in std_logic_vector(7 downto 0);
         tdata_output : out std_logic_vector(31 downto 0);
         --debug
-        valid_in_test, new_image_test : out std_logic;
-        red_test : out std_logic_vector(7 downto 0);
-        green_test : out std_logic_vector(7 downto 0);
-        blue_test : out std_logic_vector(7 downto 0);
-        next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(20 downto 0);
+--        valid_in_test, new_image_test : out std_logic;
+--        red_test : out std_logic_vector(7 downto 0);
+--        green_test : out std_logic_vector(7 downto 0);
+--        blue_test : out std_logic_vector(7 downto 0);
+--        next_state: out std_logic_vector(1 downto 0);
+--        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end main_node_new_image_generator;
@@ -59,8 +59,8 @@ component main_node is
             green : out std_logic_vector(7 downto 0);
             blue : out std_logic_vector(7 downto 0);
             --debug
-            next_state: out std_logic_vector(1 downto 0);
-            counter_in : inout std_logic_vector(20 downto 0);
+--            next_state: out std_logic_vector(1 downto 0);
+--            counter_in : inout std_logic_vector(20 downto 0);
             --debug
             valid_out, image_finished : out std_logic);
     end component;
@@ -115,9 +115,9 @@ valid_delay_reg: reg_1bit port map (D=>tmp_tvalid, clk => clk, rst => rst, Q => 
 --input_delay_reg2: reg_8bit port map (D=>tmp_data_reg1, clk => clk, rst => rst, Q => tmp_data_reg2);
 
 
-new_image_test <= new_image;
+--new_image_test <= new_image;
 --tmp_valid_reg2 <= tmp_valid_reg1 --or new_image_tmp;--new_image;
-valid_in_test <= valid_in;
+--valid_in_test <= valid_in;
 
 main_node_instance: main_node
       generic map(N => N)
@@ -130,13 +130,13 @@ main_node_instance: main_node
             green =>green,
             blue =>blue,
             --debug
-            next_state => next_state,
-            counter_in => counter_in,
+            --next_state => next_state,
+            --counter_in => counter_in,
             --debug
             valid_out =>valid_out, 
             image_finished =>image_finished );
 
-red_test <= red;
-green_test <= green;
-blue_test <= blue;
+--red_test <= red;
+--green_test <= green;
+--blue_test <= blue;
 end Structural;
