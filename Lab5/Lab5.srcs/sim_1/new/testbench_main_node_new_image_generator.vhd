@@ -33,14 +33,14 @@ architecture Behavioral of testbench_main_node_new_image_generator is
     signal tdata_output : std_logic_vector(31 downto 0);
     constant clk1_period : time := 1 ns;
     --signal value_read: std_logic_vector(7 downto 0);
-    signal red_test : std_logic_vector(7 downto 0);
-    signal green_test : std_logic_vector(7 downto 0);
-    signal blue_test : std_logic_vector(7 downto 0);
-    signal valid_in_test, new_image_test : std_logic;
+--    signal red_test : std_logic_vector(7 downto 0);
+--    signal green_test : std_logic_vector(7 downto 0);
+--    signal blue_test : std_logic_vector(7 downto 0);
+--    signal valid_in_test, new_image_test : std_logic;
     signal clk_counter : std_logic_vector (12 downto 0) := (others => '0');
-    signal counter_in :  std_logic_vector(20 downto 0);
+    --signal counter_in :  std_logic_vector(20 downto 0);
     --debug
-    signal next_state: std_logic_vector(1 downto 0);
+    --signal next_state: std_logic_vector(1 downto 0);
     --debug
 
     component main_node_new_image_generator is
@@ -50,12 +50,12 @@ architecture Behavioral of testbench_main_node_new_image_generator is
         input : in std_logic_vector(7 downto 0);
         tdata_output : out std_logic_vector(31 downto 0);
         --debug
-        red_test : out std_logic_vector(7 downto 0);
-        green_test : out std_logic_vector(7 downto 0);
-        blue_test : out std_logic_vector(7 downto 0);
-        valid_in_test, new_image_test : out std_logic;
-        next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(20 downto 0);
+--        red_test : out std_logic_vector(7 downto 0);
+--        green_test : out std_logic_vector(7 downto 0);
+--        blue_test : out std_logic_vector(7 downto 0);
+--        valid_in_test, new_image_test : out std_logic;
+--        next_state: out std_logic_vector(1 downto 0);
+--        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
     end component;
@@ -64,21 +64,20 @@ architecture Behavioral of testbench_main_node_new_image_generator is
 begin
 
     uut : main_node_new_image_generator
-
-      generic map (N => "000001000000")
+      generic map (N => "000000100000")
       Port map(clk => clk,
             rst => rst, 
             tmp_tvalid => tmp_tvalid,  
             input => input_read, 
             tdata_output => tdata_output,
             --debug
-            red_test => red_test,
-            green_test => green_test,
-            blue_test => blue_test,
-            valid_in_test => valid_in_test,
-            new_image_test => new_image_test,
-            next_state => next_state,
-            counter_in => counter_in,
+--            red_test => red_test,
+--            green_test => green_test,
+--            blue_test => blue_test,
+--            valid_in_test => valid_in_test,
+--            new_image_test => new_image_test,
+--            next_state => next_state,
+--            counter_in => counter_in,
             --debug
             valid_out => valid_out, image_finished => image_finished);
     
@@ -103,14 +102,19 @@ begin
 --        wait for clk1_period/2;
 
     
-        --for i in 1 to 1023 loop
-        --    readline(test_file, row);
-        --    read(row, v_data_read);
-        --    input_read <= std_logic_vector(to_unsigned(v_data_read, 8));
-        --    wait for clk1_period/2;
-        --        clk_counter <= clk_counter + 1;
-        --        wait for clk1_period/2;
-        --end loop;
+        for i in 1 to 1024 loop
+            tmp_tvalid <='1';
+            readline(test_file, row);
+            read(row, v_data_read);
+            input_read <= std_logic_vector(to_unsigned(v_data_read, 8));
+            wait for clk1_period/2;
+            clk_counter <= clk_counter + 1;
+            wait for clk1_period/2;
+        end loop;
+        tmp_tvalid <='0';
+        
+        
+        
 --        for i in 1 to 1024 loop
 --            readline(test_file, row);
 --            read(row, v_data_read);
@@ -118,16 +122,20 @@ begin
 --            tmp_tvalid <= '1';
 --            clk_counter <= clk_counter + 1;
 --            wait for clk1_period;
+----            wait for clk1_period/2;
+----                clk_counter <= clk_counter + 1;
+----                wait for clk1_period/2;
 --        end loop;
-        
-        input_read <= (others=>'0');
-        for i in 0 to 4095 loop
-            
-            tmp_tvalid <= '1';
-            wait for clk1_period;
-            input_read <= input_read+1;
-        end loop;
-        tmp_tvalid <='0';
+--        input_read <= (others=>'0');
+
+
+
+--        for i in 0 to 4095 loop
+--            tmp_tvalid <= '1';
+--            wait for clk1_period;
+--            input_read <= input_read + 1;
+--        end loop;
+--        tmp_tvalid <='0';
         
         wait; 
         
