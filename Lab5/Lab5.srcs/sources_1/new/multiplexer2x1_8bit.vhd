@@ -11,11 +11,17 @@ end multiplexer2x1_8bit;
 architecture Behavioral of multiplexer2x1_8bit is
 
 begin
-    process(D1, D2, choose) begin
-        if choose = '0' then
-            output<=D1;
-        else
-            output<=D2;
-        end if;
-    end process;
+
+    with choose select output <=
+        D1 when '0',
+        D2 when '1',
+        D1 when others;
+
+--    process(D1, D2, choose) begin
+--        if choose = '0' then
+--            output<=D1;
+--        else
+--            output<=D2;
+--        end if;
+--    end process;
 end Behavioral;
