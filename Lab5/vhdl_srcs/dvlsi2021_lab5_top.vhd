@@ -111,12 +111,12 @@ component main_node_new_image_generator is
         input : in std_logic_vector(7 downto 0);
         tdata_output : out std_logic_vector(31 downto 0);
         --debug
-        valid_in_test, new_image_test : out std_logic;
-        red_test : out std_logic_vector(7 downto 0);
-        green_test : out std_logic_vector(7 downto 0);
-        blue_test : out std_logic_vector(7 downto 0);
-        next_state: out std_logic_vector(1 downto 0);
-        counter_in : inout std_logic_vector(20 downto 0);
+--        valid_in_test, new_image_test : out std_logic;
+--        red_test : out std_logic_vector(7 downto 0);
+--        green_test : out std_logic_vector(7 downto 0);
+--        blue_test : out std_logic_vector(7 downto 0);
+--        next_state: out std_logic_vector(1 downto 0);
+--        counter_in : inout std_logic_vector(20 downto 0);
         --debug
         valid_out, image_finished : out std_logic);
 end component;
@@ -166,7 +166,7 @@ begin
               ------------------------------------------------------------------------------------
               -- PS2PL-DMA AXI4-STREAM MASTER INTERFACE TO ACCELERATOR AXI4-STREAM SLAVE INTERFACE
               M_AXIS_TO_ACCELERATOR_tdata         => tmp_tdata,
-              M_AXIS_TO_ACCELERATOR_tkeep         => "1",
+              M_AXIS_TO_ACCELERATOR_tkeep         => tmp_tkeep,
               M_AXIS_TO_ACCELERATOR_tlast         => tmp_tlast,
               M_AXIS_TO_ACCELERATOR_tready        => '1',
               M_AXIS_TO_ACCELERATOR_tvalid        => tmp_tvalid,
@@ -174,7 +174,7 @@ begin
               -- ACCELERATOR AXI4-STREAM MASTER INTERFACE TO PL2P2-DMA AXI4-STREAM SLAVE INTERFACE
               S_AXIS_S2MM_FROM_ACCELERATOR_tdata  => tdata_output,
               --S_AXIS_S2MM_FROM_ACCELERATOR_tkeep  => tmp_tkeep & tmp_tkeep & tmp_tkeep & tmp_tkeep,
-              S_AXIS_S2MM_FROM_ACCELERATOR_tkeep => "1",
+              S_AXIS_S2MM_FROM_ACCELERATOR_tkeep => "1111",
               S_AXIS_S2MM_FROM_ACCELERATOR_tlast  => image_finished,
               S_AXIS_S2MM_FROM_ACCELERATOR_tready => tmp_tready,
               S_AXIS_S2MM_FROM_ACCELERATOR_tvalid => valid_out
@@ -216,13 +216,14 @@ main_node: main_node_new_image_generator
         tmp_tvalid => tmp_tvalid,
         input => tmp_tdata,
         tdata_output => tdata_output,
-        valid_in_test => open,
-        new_image_test => open,
-        red_test => open,
-        green_test => open,
-        blue_test => open,
-        next_state => open,
-        counter_in => open,       
+        
+--        valid_in_test => open,
+--        new_image_test => open,
+--        red_test => open,
+--        green_test => open,
+--        blue_test => open,
+--        next_state => open,
+--        counter_in => open,       
         
         valid_out => valid_out,
         image_finished => image_finished
