@@ -151,6 +151,7 @@ reg_output_3_1 <= output_reg_3_1;
 reg_output_3_2 <= output_reg_3_2;
 --full <= full_fifo2;
 not_rst <= not rst;
+wr_fifo1 <= valid_in;
 
 --changed valid_reg5 to mid_data_valid
 pre_early_valid <= (valid_fifo2 and mid_data_valid) or all_data_read;
@@ -165,35 +166,35 @@ process (clk, rst, new_image) begin
         
     elsif rst = '1' then 
         if new_image = '1' then
-            new_image_came <= '1';
-            wr_fifo1 <= valid_in;
+            new_image_came <= valid_in;
+            --wr_fifo1 <= valid_in;
             --if valid_in = '1' then 
               --  counter_in <= counter_in + 1;
             --end if;
         end if;
         
         if rising_edge(clk) then
-            if new_image_came = '1' then 
+            --if new_image_came = '1' then 
                 if counter_in < N-2 then
-                    wr_fifo1 <= valid_in ;
+                    --wr_fifo1 <= valid_in ;
                     if valid_in = '1' then 
                         counter_in <= counter_in + 1;
                     end if;
                 elsif counter_in = N-2 then
-                    wr_fifo1 <= valid_in;
+                    --wr_fifo1 <= valid_in;
                     rd_fifo1 <= valid_in;
                     if valid_in = '1' then 
                         counter_in <= counter_in + 1;
                     end if;
                 elsif counter_in < N+N-2 then
-                    wr_fifo1 <= valid_in;
+                    --wr_fifo1 <= valid_in;
                     rd_fifo1 <= valid_in;
                     wr_fifo2 <= valid_in;
                     if valid_in = '1' then 
                         counter_in <= counter_in + 1;
                     end if;
                 elsif counter_in = N+N-2 then
-                    wr_fifo1 <= valid_in;
+                    --wr_fifo1 <= valid_in;
                     rd_fifo1 <= valid_in;
                     wr_fifo2 <= valid_in;
                     rd_fifo2 <= valid_in;
@@ -201,7 +202,7 @@ process (clk, rst, new_image) begin
                         counter_in <= counter_in + 1;
                     end if;
                 elsif counter_in < N+N+N-2 then
-                    wr_fifo1 <= valid_in;
+                    --wr_fifo1 <= valid_in;
                     rd_fifo1 <= valid_in;
                     wr_fifo2 <= valid_in;
                     rd_fifo2 <= valid_in;
@@ -210,7 +211,7 @@ process (clk, rst, new_image) begin
                         counter_in <= counter_in + 1;
                     end if;
                 elsif counter_in <= N*N then
-                    wr_fifo1 <= valid_in;
+                    --wr_fifo1 <= valid_in;
                     rd_fifo1 <= valid_in;
                     wr_fifo2 <= valid_in;
                     rd_fifo2 <= valid_in;
@@ -226,16 +227,16 @@ process (clk, rst, new_image) begin
                         --counter_in <= (others=>'0');
                         new_image_came <= '0';
                         all_data_read <= '1';
-                        wr_fifo1 <= '0';
+                        --wr_fifo1 <= '0';
                     end if;
                 end if;
-           end if;
+           --end if;
            
             if(counter_in >= N*N) then
                if counter_in < (N*N+N-2)  then 
                     --counter_out_fifo3 <= (others => '0');
                     --new_image_came <= '0';
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '1';
                     wr_fifo2 <= '1';
                     rd_fifo2 <= '1';
@@ -248,7 +249,7 @@ process (clk, rst, new_image) begin
                 elsif counter_in = (N*N+N-2)  then 
                     --counter_out_fifo3 <= (others => '0');
                     --new_image_came <= '0';
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '1';
                     rd_fifo2 <= '1';
@@ -259,7 +260,7 @@ process (clk, rst, new_image) begin
                         second_image_counter <= second_image_counter + 1;
                     end if;
                 elsif counter_in < (N*N+N+N-2) then
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
                     rd_fifo2 <= '1';
@@ -270,7 +271,7 @@ process (clk, rst, new_image) begin
                         second_image_counter <= second_image_counter + 1;
                     end if;
                 elsif counter_in = (N*N+N+N-2) or counter_in = (N*N+N+N-1) then
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
                     rd_fifo2 <= '0' or valid_in;
@@ -281,7 +282,7 @@ process (clk, rst, new_image) begin
                         second_image_counter <= second_image_counter + 1;
                     end if;
                 elsif counter_in = (N*N+N+N) then
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
                     rd_fifo2 <= '0' or valid_in;
@@ -293,7 +294,7 @@ process (clk, rst, new_image) begin
                         second_image_counter <= second_image_counter + 1;
                     end if;
                 elsif counter_in < (N*N+N+N+N-2) then
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
                     rd_fifo2 <= '0' or valid_in;
@@ -304,7 +305,7 @@ process (clk, rst, new_image) begin
                         second_image_counter <= second_image_counter + 1;
                     end if;
                 elsif counter_in = (N*N+N+N+N-2) then
-                    wr_fifo1 <= '0' or valid_in;
+                    --wr_fifo1 <= '0' or valid_in;
                     rd_fifo1 <= '0' or valid_in;
                     wr_fifo2 <= '0' or valid_in;
                     rd_fifo2 <= '0' or valid_in;

@@ -20,43 +20,43 @@ sync_proc: process(rst, clk)
                 when G_B =>  --current state green in a line with green and blue
                     if early_valid = '0' then 
                         current_state <= G_B;
-                        --y <= "00";
+                        y <= "00";
                     else
                         current_state <= B;
-                        --y <= "01";
+                        y <= "01";
                     end if;
                 when B => --current state blue
                     if early_valid = '0' then 
                         current_state <= B;
-                        --y <= "01";
+                        y <= "01";
                     else
                         if line0 = '0' then
                             current_state <= G_B;
-                            --y <= "00";
+                            y <= "00";
                         else    --line change
                             current_state <= R;
-                            --y <= "10";
+                            y <= "10";
                         end if;
                     end if;
                 when R => --current state red
                     if early_valid = '0' then 
                         current_state <= R;
-                        --y <= "10";
+                        y <= "10";
                     else
                         current_state <= G_R;
-                        --y <= "11";
+                        y <= "11";
                     end if;
                 when G_R => --current state green in a line with green and red
                     if early_valid = '0' then 
                         current_state <= G_R;
-                        --y <= "11";
+                        y <= "11";
                     else
                         if line0 = '0' then
                             current_state <= R;
-                            --y <= "10";
+                            y <= "10";
                         else    --line change
                             current_state <= G_B;
-                            --y <= "00";
+                            y <= "00";
                         end if;
                     end if;
                 when others =>
@@ -119,10 +119,10 @@ sync_proc: process(rst, clk)
 --            end case;
 --    end process comb_proc;
     
-    with current_state select
-        y <= "00" when G_B,
-        "01" when B,
-        "10" when R,
-        "11" when G_R,
-        "00" when others;
+--    with current_state select
+--        y <= "00" when G_B,
+--        "01" when B,
+--        "10" when R,
+--        "11" when G_R,
+--        "00" when others;
 end fsm_arch;
